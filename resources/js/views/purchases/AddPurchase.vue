@@ -26,6 +26,36 @@
                         <label for="inputEmail5" class="form-label">Amount Paid</label>
                         <input type="number" v-model="form.amount_paid" class="form-control" id="inputEmail5">
                         </div>
+                        <!-- <div class="form-group row"> -->
+      
+                          <div class="col-md-6">
+                            <label for="inputPassword" class="form-label">Payment Type</label>
+                            <div class="col-sm-10">
+                                <div class="form-check">
+                                  <input class="form-check-input hideable" type="radio" v-model="form.payment_type"
+                                      name="cash" id="cash" value="1">
+                                  <label class="form-check-label" for="gridRadios1">
+                                      Cash
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input class="form-check-input hideable" type="radio" v-model="form.payment_type"
+                                      name="mpesa" id="mpesa" value="2">
+                                  <label class="form-check-label" for="gridRadios2">
+                                      MPESA
+                                  </label>
+                                </div>
+
+                            </div>
+                          </div>
+                          <div v-if="form.payment_type == 2" class="col-md-6">
+                            <label for="validationCustom04" class="form-label">MPESA Code</label>
+                                <input type="text" placeholder="MPESA Code" v-model="form.mpesa_code"
+                                  id="mpesa_code" name="mpesa_code" class="form-control" required="" />
+                  
+                          </div>
+                        <!-- </div> -->
+
                         <div class="col-md-6">
                         <label for="inputPassword5" class="form-label">Comments</label>
                         <input type="text" v-model="form.comments" class="form-control" id="inputPassword5" placeholder="Comments(optional)">
@@ -71,6 +101,8 @@ export default{
             form: {
                 pieces: '',
                 amount_payable: '',
+                payment_type: '',
+                mpesa_code: '',
                 amount_paid: '',
                 comments: ''
             }
@@ -103,6 +135,8 @@ export default{
             amount_payable: this.payableAmount,
             amount_paid: this.form.amount_paid,
             comments : this.form.comments,
+            payment_type: this.form.payment_type,
+            mpesa_code: this.form.mpesa_code,
             created_by : this.user.id
           };
           axios.post('/api/purchases', payload).then((response) => {

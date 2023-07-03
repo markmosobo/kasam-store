@@ -16,6 +16,8 @@ class Purchase extends Model
      'pieces',
      'amount_payable',
      'amount_paid',
+     'payment_type',
+     'mpesa_code',
      'created_by',
      'comments'
     ];

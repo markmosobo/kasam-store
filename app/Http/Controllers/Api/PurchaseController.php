@@ -47,6 +47,8 @@ class PurchaseController extends Controller
             'pieces' => $request->pieces,
             'amount_payable' => $request->amount_payable,
             'amount_paid' => $request->amount_paid,
+            'payment_type' => $request->payment_type,
+            'mpesa_code' => $request->mpesa_code,
             'comments' => $request->comments,
             'created_by' => $request->created_by
         ]);

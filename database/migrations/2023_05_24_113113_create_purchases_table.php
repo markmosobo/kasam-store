@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('pieces')->nullable();
             $table->float('amount_payable')->nullable();
             $table->float('amount_paid')->nullable();
+            $table->integer('payment_type')->nullable();
+            $table->string('mpesa_code')->nullable();
             $table->text('comments')->nullable();
             $table->integer('created_by')->unsigned();
             $table->foreign('created_by')
