@@ -55,3 +55,5 @@ Route::get('productrevenue/{id}',[PurchaseController::class,'productRevenue']);
 Route::get('productrestock/{id}',[ProductController::class,'productRestock']);
 
 Route::get('userhistory/{id}',[UserHistoryController::class,'index']);
+Route::get('userpurchases/{id}',[PurchaseController::class,'userPurchases']);
+Route::get('userrevenue/{id}',[PurchaseController::class,'userRevenue']);

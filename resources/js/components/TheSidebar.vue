@@ -24,7 +24,7 @@
         </a>
         <ul id="charts-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
           <li>
-            <router-link to="/products" custom v-slot="{ href, navigate, isActive }">
+            <router-link to="/allproducts" custom v-slot="{ href, navigate, isActive }">
                   <a
                     :href="href"
                     :class="{ active: isActive }"

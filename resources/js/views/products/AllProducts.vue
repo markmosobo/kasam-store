@@ -169,7 +169,7 @@ export default({
         },
         getPhoto()
         {
-            return "products/";
+            return "/storage/products/";
         },
         loadLists(){
             axios.get('api/lists').then((response) => {

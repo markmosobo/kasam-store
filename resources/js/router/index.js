@@ -4,7 +4,7 @@ import Categories from '../views/categories/Categories.vue'
 import Suppliers from '../views/suppliers/Suppliers.vue'
 import Purchases from '../views/purchases/Purchases.vue'
 import Users from '../views/users/Users.vue'
-import Products from '../views/products/Products.vue'
+import AllProducts from '../views/products/AllProducts.vue'
 import Restocked from '../views/products/Restocked.vue'
 import RestockedToday from '../views/products/RestockedToday.vue'
 import AddCategory from '../views/categories/AddCategory.vue'
@@ -143,9 +143,9 @@ const routes = [
         component: Profile
     },
     {
-        path:'/products',
-        name: 'products',
-        component: Products
+        path:'/allproducts',
+        name: 'allproducts',
+        component: AllProducts
     },
     {
         path:'/restocked',
@@ -717,7 +717,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHistory('/'),
     routes
 });
 

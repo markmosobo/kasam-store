@@ -32,8 +32,12 @@
                             <i class="bi bi-cart"></i>
                             </div>
                             <div class="ps-3">
-                            <h6>145</h6>
-                            <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                            <h6>{{usertodaypurchases.length}}</h6>
+                            <span v-if="usertodaypurchases.length > useryesterdaypurchases.length" class="text-success small pt-1 fw-bold">{{salespercentage}}%</span>
+                            <span v-if="usertodaypurchases.length > useryesterdaypurchases.length" class="text-muted small pt-2 ps-1">increase</span>
+                            <!--decrease-->
+                            <span v-if="usertodaypurchases.length < useryesterdaypurchases.length" class="text-danger small pt-1 fw-bold">{{salespercentage}}%</span>
+                            <span v-if="usertodaypurchases.length < useryesterdaypurchases.length" class="text-muted small pt-2 ps-1">decrease</span>
 
                             </div>
                         </div>
@@ -60,15 +64,19 @@
                         </div>
 
                         <div class="card-body">
-                        <h5 class="card-title">{{user.first_name}}'s Revenue <span>| This Month</span></h5>
+                        <h5 class="card-title">{{user.first_name}}'s Revenue <span>| Today</span></h5>
 
                         <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                             <i class="bi bi-currency-dollar"></i>
                             </div>
                             <div class="ps-3">
-                            <h6>$3,264</h6>
-                            <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                            <h6>KES. {{usertodayrevenue.toLocaleString()}}</h6>
+                            <span v-if="usertodayrevenue > useryesterdayrevenue" class="text-success small pt-1 fw-bold">{{revenuepercentage}}%</span>
+                            <span v-if="usertodayrevenue > useryesterdayrevenue" class="text-muted small pt-2 ps-1">increase</span>
+                            <!--decrease-->
+                            <span v-if="usertodayrevenue < useryesterdayrevenue" class="text-danger small pt-1 fw-bold">{{revenuepercentage}}%</span>
+                            <span v-if="usertodayrevenue < useryesterdayrevenue" class="text-muted small pt-2 ps-1">decrease</span>
 
                             </div>
                         </div>
@@ -184,6 +192,12 @@ export default{
     data(){
         return {
             user: [],
+            usertodaypurchases: [],
+            useryesterdaypurchases: [],
+            usertodayrevenue: [],
+            useryesterdayrevenue: [],
+            salespercentage: [],
+            revenuepercentage: [],
             recenthistory: []
         }
     },
@@ -198,16 +212,39 @@ export default{
         axios.get('/api/userhistory/'+this.$route.params.id, {
         }).then((response) => {
             this.recenthistory = response.data.lists.recenthistory;
-            console.log("activity",this.recenthistory)
         })
       },
       getData(){
         axios.get('/api/users/'+this.$route.params.id, {
         }).then((response) => {
             this.user = response.data.user
-            console.log("data", response)
-            console.log("userId",this.user.id)
-        })
+        }).catch((error) => {
+
+        });
+        axios.get('/api/userpurchases/'+this.$route.params.id,{
+        }).then((response) => {
+            this.usertodaypurchases = response.data.lists.usertodaypurchases;
+            this.useryesterdaypurchases = response.data.lists.useryesterdaypurchases;
+            console.log("today", this.usertodaypurchases)
+
+            this.salesdifference = this.usertodaypurchases.length - this.useryesterdaypurchases.length;
+            this.salespercentage = 100 * (this.salesdifference/this.useryesterdaypurchases.length);
+            this.salespercentage = Number(this.salespercentage).toFixed(2);
+
+        }).catch((error) => {
+
+        });
+        axios.get('/api/userrevenue/'+this.$route.params.id,{
+        }).then((response) => {
+            this.usertodayrevenue = response.data.lists.usertodayrevenue;
+            this.useryesterdayrevenue = response.data.lists.useryesterdayrevenue;
+
+            this.revenuedifference = this.usertodayrevenue - this.useryesterdayrevenue;
+            this.revenuepercentage = 100 * (this.revenuedifference/this.useryesterdayrevenue);
+            this.revenuepercentage = Number(this.revenuepercentage).toFixed(2);
+        }).catch((error) => {
+
+        });
     },
     },
     mounted(){

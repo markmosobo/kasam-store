@@ -88,7 +88,7 @@ export default {
         },
         getPhoto()
         {
-            return "/products/";
+            return "/storage/products/";
         },
         getData(){
             axios.get('/api/products/'+this.$route.params.id).then((response) => {
@@ -124,7 +124,7 @@ export default {
           }).catch((error) => {
             console.log(error)
           });
-          this.$router.push('/products')
+          this.$router.push('/allproducts')
 
         },
         cancel(){

@@ -71,6 +71,7 @@
                 //    'error'
                 // )
              });
+            this.$router.push('/categories')
     
           }
     

@@ -36,10 +36,15 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // if(!empty($request->image)){
+        //     $photo_name = time().'.' . explode('/', explode(':', substr($request->image,0,strpos($request->image, ';')))[1])[1];
+        //     \Image::make($request->image)->save(public_path('products/').$photo_name);
+        // }else{
+        //     $photo_name = '';
+        // }
         if(!empty($request->image)){
             $photo_name = time().'.' . explode('/', explode(':', substr($request->image,0,strpos($request->image, ';')))[1])[1];
-            \Image::make($request->image)->save(public_path('products/').$photo_name);
-
+            \Image::make($request->image)->save(storage_path('app/public/products/').$photo_name);
         }else{
             $photo_name = '';
         }

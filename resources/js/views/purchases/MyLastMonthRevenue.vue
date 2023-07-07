@@ -95,6 +95,7 @@
                     <th scope="col">Amount Paid</th>               
                     <th v-show="user.role == 'admin'" scope="col">Check Out By</th>
                     <th scope="col">Comments</th>
+                    <th scope="col">Date Out</th>
                     <th scope="col">Time Out</th>
                     </tr>
                 </thead>
@@ -110,6 +111,7 @@
                     <td scope="col">{{product.amount_paid}}</td>
                     <td v-show="user.role == 'admin'" scope="col">{{product.user['first_name']}} {{product.user['last_name']}}</td>
                     <td scope="col">{{product.comments ?? 'N/A'}}</td>
+                    <td scope="col">{{format_date(product.created_at)}}</td>
                     <td scope="col">{{dateTime(product.created_at)}}</td>
                     </tr>
                 </tbody>

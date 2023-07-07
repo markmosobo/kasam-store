@@ -244,7 +244,7 @@
 
                     <div class="d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="bi bi-people"></i>
+                        <i class="bi bi-menu-button-wide"></i>
                         </div>
                         <div class="ps-3">
                         <h6>{{products.length}}</h6>
@@ -444,7 +444,7 @@
 
                     <div class="d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="bi bi-people"></i>
+                            <i class="bi bi-menu-button-wide"></i>
                         </div>
                         <div class="ps-3">
                         <h6>{{products.length}}</h6>
@@ -598,7 +598,7 @@
 
                     <div class="d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="bi bi-people"></i>
+                            <i class="bi bi-menu-button-wide"></i>
                         </div>
                         <div class="ps-3">
                         <h6>{{products.length}}</h6>

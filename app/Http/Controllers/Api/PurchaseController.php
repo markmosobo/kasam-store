@@ -238,13 +238,38 @@ class PurchaseController extends Controller
         $usertodaypurchases = Purchase::where('created_by',$id)->with('product','user')->whereDay('created_at', now()->day)->get();
         $useryesterdaypurchases = Purchase::where('created_by',$id)->select("*")->with('product','user')->whereBetween('created_at',
         [Carbon::now()->subDay()->startOfDay(), Carbon::now()->subDay()->endOfDay()])->get();
-
+        $usertwentyfourpurchases = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->whereBetween('created_at',
+        [Carbon::now()->subHours(24), Carbon::now()->endOfDay()])->get();
+        $userlastsevenpurchases = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->whereBetween('created_at',
+        [Carbon::now()->subDays(7)->startOfDay(), Carbon::now()->endOfDay()])->get();
+        $usermonthpurchases = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->whereMonth('created_at', Carbon::now()->month)->get();
+        $userlastmonthpurchases = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->whereBetween('created_at',
+        [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth()])->get();
+        $userlastninetypurchases = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->whereBetween('created_at',
+        [Carbon::now()->subDays(89)->startOfDay(), Carbon::now()->endOfDay()])->get();
+        $useryearpurchases = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->whereBetween('created_at',
+        [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->get();
+        $userquarterlypurchases = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->whereBetween('created_at',
+        [Carbon::now()->startOfQuarter(), Carbon::now()->endOfDay()])->get();
+        $userlastyearpurchases = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->whereBetween('created_at',
+        [Carbon::now()->subYear()->startOfYear(), Carbon::now()->subYear()->endOfYear()])->get();
+        $usersales = Purchase::where('created_by',$id)->with('product','user')->orderByDesc('created_at')->get();
+        
         return response()->json([
             "lists" => [
             'status' => 200,
             'message' => 'success',
             'usertodaypurchases' => $usertodaypurchases,
             'useryesterdaypurchases' => $useryesterdaypurchases,
+            'usertwentyfourpurchases' => $usertwentyfourpurchases,
+            'userlastsevenpurchases' => $userlastsevenpurchases,
+            'usermonthpurchases' => $usermonthpurchases,
+            'userlastmonthpurchases' => $userlastmonthpurchases,
+            'userlastninetypurchases' => $userlastninetypurchases,
+            'useryearpurchases' => $useryearpurchases,
+            'userlastyearpurchases' =>$userlastyearpurchases,
+            'userquarterlypurchases' =>$userquarterlypurchases,
+            'usersales' => $usersales
             ]
         ]);
     }
@@ -254,6 +279,50 @@ class PurchaseController extends Controller
         $usertodayrevenue = Purchase::where('created_by',$id)->whereDay('created_at', now()->day)->sum('amount_paid');
         $useryesterdayrevenue = Purchase::select("*")->with('product','user')->whereBetween('created_at',
         [Carbon::now()->subDay()->startOfDay(), Carbon::now()->subDay()->endOfDay()])->sum('amount_paid');
+        $usertwentyfourrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subHours(24), Carbon::now()->endOfDay()])->sum('amount_paid');
+        $userlastsevenrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subDays(7)->startOfDay(), Carbon::now()->endOfDay()])->sum('amount_paid');
+        $userweekrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('amount_paid');
+        $userlastthirtyrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subDays(29)->startOfDay(), Carbon::now()->endOfDay()])->sum('amount_paid');
+        $usermonthrevenue = Purchase::where('created_by',$id)->with('product','user')->whereMonth('created_at', Carbon::now()->month)->sum('amount_paid');
+        $userlastmonthrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth()])->sum('amount_paid');
+        $userlastninetyrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subDays(89)->startOfDay(), Carbon::now()->endOfDay()])->sum('amount_paid');
+        $useryearrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->sum('amount_paid');
+        $userquarterlyrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->startOfQuarter(), Carbon::now()->endOfDay()])->sum('amount_paid');
+        $userlastyearrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subYear()->startOfYear(), Carbon::now()->subYear()->endOfYear()])->sum('amount_paid');
+        $userrevenue = Purchase::where('created_by',$id)->with('product','user')->sum('amount_paid');
+
+        $usertodayprojectedrevenue = Purchase::where('created_by',$id)->whereDay('created_at', now()->day)->sum('amount_payable');
+        $useryesterdayprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subDay()->startOfDay(), Carbon::now()->subDay()->endOfDay()])->sum('amount_payable');
+        $usertwentyfourprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subHours(24), Carbon::now()->endOfDay()])->sum('amount_payable');
+        $userlastsevenprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subDays(7)->startOfDay(), Carbon::now()->endOfDay()])->sum('amount_payable');
+        $userweekprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('amount_payable');
+        $userlastthirtyprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subDays(29)->startOfDay(), Carbon::now()->endOfDay()])->sum('amount_payable');
+        $usermonthprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereMonth('created_at', Carbon::now()->month)->sum('amount_payable');
+        $userlastmonthprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth()])->sum('amount_payable');
+        $userlastninetyprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subDays(89)->startOfDay(), Carbon::now()->endOfDay()])->sum('amount_payable');
+        $useryearprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->sum('amount_payable');
+        $userquarterlyprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->startOfQuarter(), Carbon::now()->endOfDay()])->sum('amount_payable');
+        $userlastyearprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->whereBetween('created_at',
+        [Carbon::now()->subYear()->startOfYear(), Carbon::now()->subYear()->endOfYear()])->sum('amount_payable');
+        $userprojectedrevenue = Purchase::where('created_by',$id)->with('product','user')->sum('amount_payable');
 
         return response()->json([
             "lists" => [
@@ -261,6 +330,30 @@ class PurchaseController extends Controller
             'message' => 'success',
             'usertodayrevenue' => $usertodayrevenue,
             'useryesterdayrevenue' => $useryesterdayrevenue,
+            'usertwentyfourrevenue' => $usertwentyfourrevenue,
+            'userlastsevenrevenue' => $userlastsevenrevenue,
+            'userweekrevenue' => $userweekrevenue,
+            'userlastthirtyrevenue' => $userlastthirtyrevenue,
+            'usermonthrevenue' => $usermonthrevenue,
+            'userlastmonthrevenue' => $userlastmonthrevenue,
+            'userlastninetyrevenue' => $userlastninetyrevenue,
+            'useryearrevenue' => $useryearrevenue,
+            'userquarterlyrevenue' => $userquarterlyrevenue,
+            'userlastyearrevenue' => $userlastyearrevenue,
+            'userrevenue' => $userrevenue,
+            'usertodayprojectedrevenue' => $usertodayprojectedrevenue,
+            'useryesterdayprojectedrevenue' => $useryesterdayprojectedrevenue,
+            'usertwentyfourprojectedrevenue' => $usertwentyfourprojectedrevenue,
+            'userlastsevenprojectedrevenue' => $userlastsevenprojectedrevenue,
+            'userweekprojectedrevenue' => $userweekprojectedrevenue,
+            'userlastthirtyprojectedrevenue' => $userlastthirtyprojectedrevenue,
+            'usermonthprojectedrevenue' => $usermonthprojectedrevenue,
+            'userlastmonthprojectedrevenue' => $userlastmonthprojectedrevenue,
+            'userlastninetyprojectedrevenue' => $userlastninetyprojectedrevenue,
+            'useryearprojectedrevenue' => $useryearprojectedrevenue,
+            'userquarterlyprojectedrevenue' => $userquarterlyprojectedrevenue,
+            'userlastyearprojectedrevenue' => $userlastyearprojectedrevenue,
+            'userprojectedrevenue' => $userprojectedrevenue
             ]
         ]);
     }

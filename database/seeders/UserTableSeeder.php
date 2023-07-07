@@ -34,5 +34,14 @@ class UserTableSeeder extends Seeder
             'password' => Hash::make('123456')
         ]);
 
+        User::create([
+            'id' => 3,
+            'first_name' => 'Organization',
+            'last_name' => 'Storekeeper',
+            'email' => 'storekeeper@gmail.com',
+            'role' => 'storekeeper',
+            'phone' => '0712200000',
+            'password' => Hash::make('123456')
+        ]);
     }
 }

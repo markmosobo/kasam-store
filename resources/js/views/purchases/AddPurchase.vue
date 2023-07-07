@@ -45,7 +45,13 @@
                                       MPESA
                                   </label>
                                 </div>
-
+                                <!-- <div class="form-check">
+                                  <input class="form-check-input hideable" type="radio" v-model="form.payment_type"
+                                      name="credit" id="credit" value="3">
+                                  <label class="form-check-label" for="gridRadios2">
+                                      On Credit
+                                  </label>
+                                </div> -->
                             </div>
                           </div>
                           <div v-if="form.payment_type == 2" class="col-md-6">
@@ -119,7 +125,7 @@ export default{
         },
         getPhoto()
         {
-            return "/products/";
+            return "/storage/products/";
         },
         getData(){
             axios.get('/api/products/'+this.$route.params.id).then((response) => {
@@ -142,7 +148,7 @@ export default{
           axios.post('/api/purchases', payload).then((response) => {
             toast.fire(
                 'Success!',
-                'Purchase saved!',
+                'Sale saved!',
                 'success'
              )
             console.log(response)

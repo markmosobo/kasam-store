@@ -31,7 +31,7 @@
                     <h5 class="card-title">Activity Stats</h5>
 
                     <ul class="list-group">
-                     <li class="list-group-item"> Product added by max at 12:00 pm </li>
+                     <li v-for="item in recenthistory" :key="item.id" class="list-group-item"><span>{{ format_date(item.created_at) }}</span>:  {{item.description}} at {{ dateTime(item.created_at) }} </li>
     
                     </ul>
                   </div>
@@ -46,6 +46,7 @@
 
 <script>
 import TheMaster from "@/components/TheMaster.vue";
+import moment from 'moment';
 
 export default {
    components : {
@@ -53,13 +54,22 @@ export default {
    },
    data() {
     return {
-        product: []
+        product: [],
+        recenthistory: []
     }
    },
    methods: {
+    dateTime(value) {
+      return moment(String(value)).format('LT');
+    },
+    format_date(value){
+      if(value){
+        return moment(String(value)).format('MMM Do YYYY')
+      }
+    },
     getPhoto()
     {
-        return "/products/";
+        return "/storage/products/";
     },
     getData(){
       axios.get('/api/products/'+this.$route.params.id, {
@@ -67,6 +77,11 @@ export default {
           this.product = response.data.product
           console.log("data", response)
       })
+      axios.get('/api/producthistory/'+this.$route.params.id, {
+      }).then((response) => {
+          this.recenthistory = response.data.lists.recenthistory
+          console.log("data", this.recenthistory)
+      }) 
     }
    },
    mounted(){

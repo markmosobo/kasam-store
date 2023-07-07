@@ -111,7 +111,7 @@
                 <div class="col-sm-6">
                    <label for="validationCustom04" class="form-label">Buying Price</label>
                    <div class="col-sm-10">
-                      <input type="text" placeholder="Buying Price*" v-model="form.buying_price" id="estate_name" name="estate_name" class="form-control"
+                      <input type="number" placeholder="Buying Price*" v-model="form.buying_price" id="estate_name" name="estate_name" class="form-control"
                          required="" />
                       <div class="invalid-feedback">Please enter price!</div>
                    </div>
@@ -119,7 +119,7 @@
                 <div class="col-sm-6">
                <label for="validationCustom04" class="form-label">Selling Price</label>
                <div class="col-sm-10">
-                  <input type="text" placeholder="Selling Price*" id="address" v-model="form.selling_price" name="address" class="form-control"
+                  <input type="number" placeholder="Selling Price*" id="address" v-model="form.selling_price" name="address" class="form-control"
                      required="" />
                   <div class="invalid-feedback">Please enter price</div>
                </div>
@@ -217,7 +217,6 @@
        submit(){
           axios.post("api/products", this.form)
           .then(function (response) {
-             console.log(response);
             //  this.step = 1;
              toast.fire(
                 'Success!',
@@ -234,7 +233,7 @@
              //    'error'
              // )
           });
-          this.$router.push('/products')
+          this.$router.push('/allproducts')
 
  
        }

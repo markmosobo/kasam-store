@@ -146,7 +146,6 @@
                    'Supplier added!',
                    'success'
                 )
-                // this.$router.push('/categories')
              })
              .catch(function (error) {
                 console.log(error);
@@ -156,6 +155,7 @@
                 //    'error'
                 // )
              });
+            this.$router.push('/suppliers')
     
           }
     

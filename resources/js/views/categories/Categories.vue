@@ -56,7 +56,7 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
                                   <a @click="navigateTo('/editcategory/'+category.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Edit</a>
-                                  <a @click="deleteCategory(category.id)" class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>Delete</a>   
+                                  <!-- <a @click="deleteCategory(category.id)" class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>Delete</a>    -->
                                 </div>
                             </div>
                           </td>

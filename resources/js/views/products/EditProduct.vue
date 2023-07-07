@@ -241,7 +241,7 @@
             }).catch((error) => {
                console.log(error)
             });
-            this.$router.push('/products')
+            this.$router.push('/allproducts')
 
         }
  
