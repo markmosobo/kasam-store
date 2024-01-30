@@ -36,10 +36,14 @@
                     <td scope="col">{{product.pieces}}</td>
                     <td scope="col">{{product.selling_price}}</td>
                     <td scope="col">{{product.supplier['name']}}</td>                
-                    <td>
+     <!--                <td>
                         <button @click="checkoutProduct(product.id)" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#basicModal28">
                             Checkout</button>
-                    </td>
+                    </td> -->
+                    <td>
+                        <button type="submit" v-on:click="addToCart(product)" class="btn btn-primary">
+                            Add To Cart</button>
+                    </td>                                        
                     </tr>
                 </tbody>
                 </table>
@@ -123,6 +127,11 @@ export default({
     components: {
         TheMaster
     },
+    computed: {
+        payableAmount() {
+        return this.form.pieces * this.product.selling_price; // Multiply inputValue by 2 (change this multiplier as needed)
+        },
+    },    
     methods: {
         dateTime(value) {
         return moment(String(value)).format('LT');
@@ -147,7 +156,28 @@ export default({
                     $("#checkedoutTable").DataTable();
                 }, 10);
             })
+        }, 
+        addToCart(product) {
+            // Make an API request to add the product to the cart
+            axios.post('/api/add-to-cart', {
+                product_id: product.id,
+                quantity: 1, // You can modify this based on user input or other factors
+            })
+            .then(response => {
+                console.log(response.data.message);
+                // this.hardReloadPage();
+                this.$router.push('/cart')
+
+                // Update the UI or perform any other necessary actions
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+            });
         },
+        hardReloadPage() {
+            // Perform a hard reload of the page
+            location.reload(true);
+        },                       
         checkoutProduct(id){
             this.$router.push('/purchaseproduct/'+id)
         }

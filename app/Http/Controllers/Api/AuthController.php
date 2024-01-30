@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Activity;; 
 use Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -47,7 +48,7 @@ class AuthController extends Controller
         } 
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         $accessToken = auth()->user()->token();
 
@@ -58,6 +59,10 @@ class AuthController extends Controller
         // ]);
 
         $accessToken->revoke();
+        // Clear the cart data from the session
+        $cart = Session::has('cart') ? Session::get('cart') : null;
+
+        session()->forget();
 
         return response()->json(['status' => 200]);
     }

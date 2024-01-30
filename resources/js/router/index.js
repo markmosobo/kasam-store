@@ -121,6 +121,29 @@ import MyYearRevenue from '../views/purchases/MyYearRevenue.vue'
 import MyLastYearRevenue from '../views/purchases/MyLastYearRevenue.vue'
 import MyQuarterlyRevenue from '../views/purchases/MyQuarterlyRevenue.vue'
 
+//payment routes
+import Checkout from '../views/payment/Checkout.vue'
+import Cart from '../views/payment/Cart.vue'
+
+function guardMyroute(to, from, next)
+{
+ var isAuthenticated= false;
+//this is just an example. You will have to find a better or 
+// centralised way to handle you localstorage data handling 
+if(localStorage.getItem('user'))
+  isAuthenticated = true;
+ else
+  isAuthenticated= false;
+ if(isAuthenticated) 
+ {
+  next(); // allow to enter route
+ } 
+ else
+ {
+  next('/login'); // go to '/login';
+ }
+}
+
 const routes = [
     {
         path:'/',
@@ -130,7 +153,8 @@ const routes = [
     {
         path:'/dashboard',
         name: 'dashboard',
-        component: Index
+        component: Index,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/login',
@@ -140,360 +164,431 @@ const routes = [
     {
         path:'/profile',
         name: 'profile',
-        component: Profile
+        component: Profile,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/allproducts',
         name: 'allproducts',
-        component: AllProducts
+        component: AllProducts,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/restocked',
         name: 'restocked',
-        component: Restocked
+        component: Restocked,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/restockedtoday',
         name: 'restockedtoday',
-        component: RestockedToday
+        component: RestockedToday,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/add-product',
         name: 'add-product',
-        component: AddProduct
+        component: AddProduct,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/categories',
         name: 'categories',
-        component: Categories
+        component: Categories,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/add-category',
         name: 'add-category',
-        component: AddCategory
+        component: AddCategory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/add-user',
         name: 'add-user',
-        component: AddUser
+        component: AddUser,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/suppliers',
         name: 'suppliers',
-        component: Suppliers
+        component: Suppliers,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/users',
         name: 'users',
-        component: Users
+        component: Users,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/add-supplier',
         name: 'add-supplier',
-        component: AddSupplier
+        component: AddSupplier,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchases',
         name: 'purchases',
-        component: Purchases
+        component: Purchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchaseproduct/:id',
         name: 'purchase-product',
-        component: AddPurchase
+        component: AddPurchase,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/restockproduct/:id',
         name: 'restock-product',
-        component: RestockProduct
+        component: RestockProduct,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/viewproduct/:id',
         name: 'view-product',
-        component: ViewProduct
+        component: ViewProduct,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/viewproducthistory/:id',
         name: 'view-producthistory',
-        component: ViewProductHistory
+        component: ViewProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/editproduct/:id',
         name: 'edit-product',
-        component: EditProduct
+        component: EditProduct,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/editcategory/:id',
         name: 'edit-category',
-        component: EditCategory
+        component: EditCategory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/editsupplier/:id',
         name: 'edit-supplier',
-        component: EditSupplier
+        component: EditSupplier,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/viewuser/:id',
         name: 'view-user',
-        component: ViewUser
+        component: ViewUser,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/viewuseractivity/:id',
         name: 'view-useractivity',
-        component: ViewUserActivity
+        component: ViewUserActivity,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/edituser/:id',
         name: 'edit-user',
-        component: EditUser
+        component: EditUser,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchasestoday',
         name: 'purchasestoday',
-        component: TodayPurchases
+        component: TodayPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchasesweek',
         name: 'purchasesweek',
-        component: WeekPurchases
+        component: WeekPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchasesmonth',
         name: 'purchasesmonth',
-        component: MonthPurchases
+        component: MonthPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchasesyear',
         name: 'purchasesyear',
-        component: YearPurchases
+        component: YearPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchasesquarter',
         name: 'purchasesquarter',
-        component: QuarterlyPurchases
+        component: QuarterlyPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchasesall',
         name: 'purchasesall',
-        component: AllPurchases
+        component: AllPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchasestwentyfour',
         name: 'purchasestwentyfour',
-        component: TwentyFourPurchases
+        component: TwentyFourPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchasesyesterday',
         name: 'purchasesyesterday',
-        component: YesterdayPurchases
+        component: YesterdayPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchaseslastseven',
         name: 'purchaseslastseven',
-        component: LastSevenPurchases
+        component: LastSevenPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchaseslastthirty',
         name: 'purchaseslastthirty',
-        component: LastThirtyPurchases
+        component: LastThirtyPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchaseslastninety',
         name: 'purchaseslastninety',
-        component: LastNinetyPurchases
+        component: LastNinetyPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchaseslastmonth',
         name: 'purchaseslastmonth',
-        component: LastMonthPurchases
+        component: LastMonthPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/purchaseslastyear',
         name: 'purchaseslastyear',
-        component: LastYearPurchases
+        component: LastYearPurchases,
+        beforeEnter : guardMyroute,
     },
 
     {
         path:'/revenuetoday',
         name: 'revenuetoday',
-        component: TodayRevenue
+        component: TodayRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenueweek',
         name: 'revenueweek',
-        component: WeekRevenue
+        component: WeekRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenuemonth',
         name: 'revenuemonth',
-        component: MonthRevenue
+        component: MonthRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenueyear',
         name: 'revenueyear',
-        component: YearRevenue
+        component: YearRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenuequarter',
         name: 'revenuequarter',
-        component: QuarterlyRevenue
+        component: QuarterlyRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenueall',
         name: 'revenueall',
-        component: AllRevenue
+        component: AllRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenuetwentyfour',
         name: 'revenuetwentyfour',
-        component: TwentyFourRevenue
+        component: TwentyFourRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenueyesterday',
         name: 'revenueyesterday',
-        component: YesterdayRevenue
+        component: YesterdayRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenuelastseven',
         name: 'revenuelastseven',
-        component: LastSevenRevenue
+        component: LastSevenRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenuelastthirty',
         name: 'revenuelastthirty',
-        component: LastThirtyRevenue
+        component: LastThirtyRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenuelastninety',
         name: 'revenuelastninety',
-        component: LastNinetyRevenue
+        component: LastNinetyRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenuelastmonth',
         name: 'revenuelastmonth',
-        component: LastMonthRevenue
+        component: LastMonthRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/revenuelastyear',
         name: 'revenuelastyear',
-        component: LastYearRevenue
+        component: LastYearRevenue,
+        beforeEnter : guardMyroute,
     },
 
     {
         path:'/producthistorytoday/:id',
         name: 'producthistorytoday',
-        component: TodayProductHistory
+        component: TodayProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistorytwentyfour/:id',
         name: 'producthistorytwentyfour',
-        component: TwentyFourProductHistory
+        component: TwentyFourProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistoryyesterday/:id',
         name: 'producthistoryyesterday',
-        component: YesterdayProductHistory
+        component: YesterdayProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistorylastseven/:id',
         name: 'producthistorylastseven',
-        component: LastSevenProductHistory
+        component: LastSevenProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistoryweek/:id',
         name: 'producthistoryweek',
-        component: WeekProductHistory
+        component: WeekProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistorylastthirty/:id',
         name: 'producthistorylastthirty',
-        component: LastThirtyProductHistory
+        component: LastThirtyProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistorymonth/:id',
         name: 'producthistorymonth',
-        component: MonthProductHistory
+        component: MonthProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistorylastmonth/:id',
         name: 'producthistorylastmonth',
-        component: LastMonthProductHistory
+        component: LastMonthProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistorylastninety/:id',
         name: 'producthistorylastninety',
-        component: LastNinetyProductHistory
+        component: LastNinetyProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistoryyear/:id',
         name: 'producthistoryyear',
-        component: YearProductHistory
+        component: YearProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistoryquarterly/:id',
         name: 'producthistoryquarterly',
-        component: QuarterlyProductHistory
+        component: QuarterlyProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistorylastyear/:id',
         name: 'producthistorylastyear',
-        component: LastYearProductHistory
+        component: LastYearProductHistory,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/producthistoryall/:id',
         name: 'producthistoryall',
-        component: AllProductHistory
+        component: AllProductHistory,
+        beforeEnter : guardMyroute,
     },
 
     {
         path:'/productsaletoday/:id',
         name: 'productsaletoday',
-        component: TodayProductSale
+        component: TodayProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsaletwentyfour/:id',
         name: 'productsaletwentyfour',
-        component: TwentyFourProductSale
+        component: TwentyFourProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsaleyesterday/:id',
         name: 'productsaleyesterday',
-        component: YesterdayProductSale
+        component: YesterdayProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsalelastseven/:id',
         name: 'productsalelastseven',
-        component: LastSevenProductSale
+        component: LastSevenProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsaleweek/:id',
         name: 'productsaleweek',
-        component: WeekProductSale
+        component: WeekProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsalelastthirty/:id',
         name: 'productsalelastthirty',
-        component: LastThirtyProductSale
+        component: LastThirtyProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsalemonth/:id',
         name: 'productsalemonth',
-        component: MonthProductSale
+        component: MonthProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsalelastmonth/:id',
         name: 'productsalelastmonth',
-        component: LastMonthProductSale
+        component: LastMonthProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsalelastninety/:id',
         name: 'productsalelastninety',
-        component: LastNinetyProductSale
+        component: LastNinetyProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsaleyear/:id',
         name: 'productsaleyear',
-        component: YearProductSale
+        component: YearProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsalequarterly/:id',
@@ -503,217 +598,271 @@ const routes = [
     {
         path:'/productsalelastyear/:id',
         name: 'productsalelastyear',
-        component: LastYearProductSale
+        component: LastYearProductSale,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productsaleall/:id',
         name: 'productsaleall',
-        component: AllProductSale
+        component: AllProductSale,
+        beforeEnter : guardMyroute,
     },
 
     {
         path:'/productrevenuetoday/:id',
         name: 'productrevenuetoday',
-        component: TodayProductRevenue
+        component: TodayProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenuetwentyfour/:id',
         name: 'productrevenuetwentyfour',
-        component: TwentyFourProductRevenue
+        component: TwentyFourProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenueyesterday/:id',
         name: 'productrevenueyesterday',
-        component: YesterdayProductRevenue
+        component: YesterdayProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenuelastseven/:id',
         name: 'productrevenuelastseven',
-        component: LastSevenProductRevenue
+        component: LastSevenProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenueweek/:id',
         name: 'productrevenueweek',
-        component: WeekProductRevenue
+        component: WeekProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenuelastthirty/:id',
         name: 'productrevenuelastthirty',
-        component: LastThirtyProductRevenue
+        component: LastThirtyProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenuemonth/:id',
         name: 'productrevenuemonth',
-        component: MonthProductRevenue
+        component: MonthProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenuelastmonth/:id',
         name: 'productrevenuelastmonth',
-        component: LastMonthProductRevenue
+        component: LastMonthProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenuelastninety/:id',
         name: 'productrevenuelastninety',
-        component: LastNinetyProductRevenue
+        component: LastNinetyProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenueyear/:id',
         name: 'productrevenueyear',
-        component: YearProductRevenue
+        component: YearProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenuequarterly/:id',
         name: 'productrevenuequarterly',
-        component: QuarterlyProductRevenue
+        component: QuarterlyProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenuelastyear/:id',
         name: 'productrevenuelastyear',
-        component: LastYearProductRevenue
+        component: LastYearProductRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrevenueall/:id',
         name: 'productrevenueall',
-        component: AllProductRevenue
+        component: AllProductRevenue,
+        beforeEnter : guardMyroute,
     },
 
     {
         path:'/productrestockmonth/:id',
         name: 'productrestockmonth',
-        component: MonthProductRestock
+        component: MonthProductRestock,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrestocklastmonth/:id',
         name: 'productrestocklastmonth',
-        component: LastMonthProductRestock
+        component: LastMonthProductRestock,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrestocklastninety/:id',
         name: 'productrestocklastninety',
-        component: LastNinetyProductRestock
+        component: LastNinetyProductRestock,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrestockyear/:id',
         name: 'productrestockyear',
-        component: YearProductRestock
+        component: YearProductRestock,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrestockquarterly/:id',
         name: 'productrestockquarterly',
-        component: QuarterlyProductRestock
+        component: QuarterlyProductRestock,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrestocklastyear/:id',
         name: 'productrestocklastyear',
-        component: LastYearProductRestock
+        component: LastYearProductRestock,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/productrestockall/:id',
         name: 'productrestockall',
-        component: AllProductRestock
+        component: AllProductRestock,
+        beforeEnter : guardMyroute,
     },
 
     {
         path:'/mypurchasestoday/:id',
         name: 'mypurchasestoday',
-        component: MyTodayPurchases
+        component: MyTodayPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchasestwentyfour/:id',
         name: 'mypurchasestwentyfour',
-        component: MyTwentyFourPurchases
+        component: MyTwentyFourPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchasesyesterday/:id',
         name: 'mypurchasesyesterday',
-        component: MyYesterdayPurchases
+        component: MyYesterdayPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchaseslastseven/:id',
         name: 'mypurchaseslastseven',
-        component: MyLastSevenPurchases
+        component: MyLastSevenPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchasesmonth/:id',
         name: 'mypurchasesmonth',
-        component: MyMonthPurchases
+        component: MyMonthPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchaseslastmonth/:id',
         name: 'mypurchaseslastmonth',
-        component: MyLastMonthPurchases
+        component: MyLastMonthPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchaseslastninety/:id',
         name: 'mypurchaseslastninety',
-        component: MyLastNinetyPurchases
+        component: MyLastNinetyPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchasesyear/:id',
         name: 'mypurchasesyear',
-        component: MyYearPurchases
+        component: MyYearPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchasesquarterly/:id',
         name: 'mypurchasesquarterly',
-        component: MyQuarterlyPurchases
+        component: MyQuarterlyPurchases,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/mypurchaseslastyear/:id',
         name: 'mypurchaseslastyear',
-        component: MyLastYearPurchases
+        component: MyLastYearPurchases,
+        beforeEnter : guardMyroute,
     },
 
     {
         path:'/myrevenuetoday/:id',
         name: 'myrevenuetoday',
-        component: MyTodayRevenue
+        component: MyTodayRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenuetwentyfour/:id',
         name: 'myrevenuetwentyfour',
-        component: MyTwentyFourRevenue
+        component: MyTwentyFourRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenueyesterday/:id',
         name: 'myrevenueyesterday',
-        component: MyYesterdayRevenue
+        component: MyYesterdayRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenuelastseven/:id',
         name: 'myrevenuelastseven',
-        component: MyLastSevenRevenue
+        component: MyLastSevenRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenuemonth/:id',
         name: 'myrevenuemonth',
-        component: MyMonthRevenue
+        component: MyMonthRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenuelastmonth/:id',
         name: 'myrevenuelastmonth',
-        component: MyLastMonthRevenue
+        component: MyLastMonthRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenuelastninety/:id',
         name: 'myrevenuelastninety',
-        component: MyLastNinetyRevenue
+        component: MyLastNinetyRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenueyear/:id',
         name: 'myrevenueyear',
-        component: MyYearRevenue
+        component: MyYearRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenuequarterly/:id',
         name: 'myrevenuequarterly',
-        component: MyQuarterlyRevenue
+        component: MyQuarterlyRevenue,
+        beforeEnter : guardMyroute,
     },
     {
         path:'/myrevenuelastyear/:id',
         name: 'myrevenuelastyear',
-        component: MyLastYearRevenue
+        component: MyLastYearRevenue,
+        beforeEnter : guardMyroute,
     },
+    {
+        path:'/checkout',
+        name: 'checkout',
+        component: Checkout,
+        beforeEnter : guardMyroute,
+    }, 
+    {
+        path:'/cart',
+        name: 'cart',
+        component: Cart,
+        beforeEnter : guardMyroute,
+    },        
 ];
 
 const router = createRouter({

@@ -136,15 +136,15 @@ export default{
         },
         submit(){
             const payload = {
-            product_id: this.product.id,
-            pieces: this.form.pieces,
-            amount_payable: this.payableAmount,
-            amount_paid: this.form.amount_paid,
-            comments : this.form.comments,
-            payment_type: this.form.payment_type,
-            mpesa_code: this.form.mpesa_code,
-            created_by : this.user.id
-          };
+              product_id: this.product.id,
+              pieces: this.form.pieces,
+              amount_payable: this.payableAmount,
+              amount_paid: this.form.amount_paid,
+              comments : this.form.comments,
+              payment_type: this.form.payment_type,
+              mpesa_code: this.form.mpesa_code,
+              created_by : this.user.id
+            };
           axios.post('/api/purchases', payload).then((response) => {
             toast.fire(
                 'Success!',

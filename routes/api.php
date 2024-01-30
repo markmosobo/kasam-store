@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\ProductHistoryController;
 use App\Http\Controllers\Api\UserHistoryController;
+use App\Http\Controllers\Api\CartController;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){
     Route::get('/user', function( Request $request ){
@@ -57,3 +58,9 @@ Route::get('productrestock/{id}',[ProductController::class,'productRestock']);
 Route::get('userhistory/{id}',[UserHistoryController::class,'index']);
 Route::get('userpurchases/{id}',[PurchaseController::class,'userPurchases']);
 Route::get('userrevenue/{id}',[PurchaseController::class,'userRevenue']);
+
+Route::get('get-cart', [CartController::class, 'getCart'])->name('cart.list');
+Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('cart.store');
+Route::post('update-cart', [CartController::class, 'updateCart'])->name('cart.update');
+Route::post('remove-from-cart', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('clear-cart', [CartController::class, 'clearAllCart'])->name('cart.clear');
