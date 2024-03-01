@@ -30,7 +30,7 @@
                         <th scope="row">Total</th>
                         <td></td>
                         <td></td>
-                        <td>2016</td>
+                        <td>{{calculateTotal()}}</td>
                       </tr> 
                     </tbody>
                   </table>
@@ -113,7 +113,7 @@
                     <button @click.prevent="cancel()" class="btn btn-dark">Cancel</button>
                     </div>
                     <div class="col-sm-6 col-lg-6 text-end">
-                    <button type="submit" class="btn btn-primary">Print Receipt</button>
+                    <button @click="printReceipt" class="btn btn-primary">Print Receipt</button>
                     </div>
                 </div>
               </form>
@@ -148,12 +148,23 @@ export default {
          message: "",
          successMessage: "",
          loading: false,
+         total: ''
         }
     },
     methods: {
          cancel(){
             this.$router.push('/purchases')
          },
+         calculateTotal() {
+            let total = 0;
+
+            for (const productId in this.cart) {
+              const item = this.cart[productId];
+              total += item.price * item.quantity;
+            }
+            this.newTotal = total;
+            return total;
+          },
           fetchCart() {
           // Make an API request to get the cart data
           axios.get('/api/get-cart')
@@ -165,7 +176,23 @@ export default {
             .catch(error => {
               console.error('Error fetching cart:', error);
             });
-          },          
+          },
+          clearCart() {
+          // Make an API request to get the cart data
+          axios.post('/api/clear-cart')
+            .then(response => {
+              // this.cart = response.data.cart;
+                toast.fire(
+                   'Success!',
+                   'Cart items cleared!',
+                   'success'
+                )          
+              console.log("remove", response)
+            })
+            .catch(error => {
+              console.error('Error fetching cart:', error);
+            });
+          },                    
           submit(){
              axios.post("api/users", this.form)
              .then(function (response) {
@@ -188,11 +215,156 @@ export default {
             this.$router.push('/purchases')
 
     
-          }
+          },
+          printReceipt() {
+            this.$router.push('/purchases')
+
+            // Open a new window for printing
+            const printWindow = window.open("", "_blank");
+
+            // Build the content for printing
+            const receiptContent = this.buildReceiptContent();
+
+            // Write the content to the new window
+            printWindow.document.write(receiptContent);
+
+            // Close the document stream
+            printWindow.document.close();
+
+            // Trigger the print dialog
+            printWindow.print();
+            this.clearCart();
+          },
+
+          buildReceiptContent() {
+            // Build the HTML content for the receipt
+            const receiptHTML = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>KASAM STORES</title>
+              <style>
+                body {
+                  font-family: monospace;
+                  font-size: 12px;
+                  margin: 0;
+                }
+                table, th, td {
+                  border-collapse: collapse;
+                }
+                th, td {
+                  padding: 5px;
+                  text-align: left;
+                }
+                .header {
+                  text-align: center;
+                }
+                .footer {
+                  text-align: right;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>KASAM STORES</h1>
+                <p>P.O. BOX 1716-50100 KAKAMEGA Opp. Kenya Power Rd.</p>
+                <p>Mob: 0722 844 910</p>
+              </div>
+              <div>
+                <p>VAT: Barware - CHED</p>
+                <p>WAT NO. 0161493R</p>
+                <p>PIN: A0146635900</p>
+                <p>Tel: 0769 08207</p>
+              </div>
+              <div class="header">
+                <h3>FISCAL RECEIPT</h3>
+                <h3>ORIGINAL</h3>
+              </div>
+              <table>
+                <tr>
+                  <th>QTY</th>
+                  <th>Partic</th>
+                  <th>Invoice Nr:</th>
+                </tr>
+                <tr v-for="(item) in cart" :key="productId">
+                  <td>0001</td>
+                  <td>Operator 01</td>
+                  <td>000000000001196</td>
+                </tr>
+                <tr>
+                  <td>A</td>
+                  <td>00001 Art. 00001</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>Sum</td>
+                  <td>1.000 pcs X 40500.00</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>700 7000</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>40500.00 A</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>1350 13500</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>TOTAL</td>
+                  <td>40500.00</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>TOTAL A-16.00%</td>
+                  <td>40500.00</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>TOTAL TAX A</td>
+                  <td>5586.21</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>TUTAL TAX</td>
+                  <td>5586.21</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>CASH</td>
+                  <td>40500.00</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>ITEMS NUMBER</td>
+                  <td>1</td>
+                </tr>
+              </table>
+              <div class="footer">
+                <p>Printed on: ${new Date().toLocaleString()}</p>
+                <p>CU Serial No: FT ANY LIAB</p>
+                <p>CU Invoice N:0110691570000001198</p>
+                <p>EO&E No 4172</p>
+              </div>
+            </body>
+            </html>
+            `;
+
+            return receiptHTML;
+          },          
     },
     computed: {
         payableAmount() {
-        return this.form.cash - 100; // Multiply inputValue by 2 (change this multiplier as needed)
+        return this.form.cash - this.newTotal; // Multiply inputValue by 2 (change this multiplier as needed)
         },
     },    
     components : {

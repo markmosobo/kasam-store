@@ -83,7 +83,7 @@
                 <hr class="dropdown-divider">
               </li>              
               <li v-if="cart.length !== 0" class="dropdown-header">
-               Total: <strong>KSH. 9000</strong>
+               Total: <strong>KSH. {{calculateTotal()}}</strong>
                 <a href="#" @click="goToCheckout()"><span class="badge rounded-pill bg-primary p-2 ms-2">Checkout</span></a>
               </li>              
   
@@ -259,7 +259,17 @@ window.toast = toast;
         if (this.cart[id].quantity > 0) {
           this.cart[id].quantity--;
         }
-      },  
+      }, 
+      calculateTotal() {
+        let total = 0;
+
+        for (const productId in this.cart) {
+          const item = this.cart[productId];
+          total += item.price * item.quantity;
+        }
+
+        return total;
+      }, 
       removeCartItem(productId) {
         // Make an API request to remove the product from the cart
         axios.post('/api/remove-from-cart', {
@@ -307,11 +317,22 @@ window.toast = toast;
         .catch(error => {
           console.error('Error fetching cart:', error);
         });
-      },          
+      }, 
+      clearAllCart() {
+      // Make an API request to get the cart data
+      axios.post('/api/clear-cart')
+        .then(response => {
+          // this.cart = response.data.cart;          
+          console.log("remove", response)
+        })
+        .catch(error => {
+          console.error('Error fetching cart:', error);
+        });
+      },               
       logout(){
         axios.get('api/logout').then((response) => {
           localStorage.removeItem('user');
-          this.clearCart();
+          this.clearAllCart();
           this.$router.push('/login')
         }).catch((error) => {
           console.log(error)

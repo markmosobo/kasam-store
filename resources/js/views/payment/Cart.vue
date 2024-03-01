@@ -29,7 +29,7 @@
                         <button class="btn btn--minus" @click="decrease(productId)" type="button" name="button">
                         -
                         </button>
-                        <input class="quantity" type="text" name="name" :value="item.quantity">
+                        <input class="quantity" type="text" name="name" :value="item.quantity" readonly>
                         <button class="btn btn--plus" @click="increase(productId)" type="button" name="button">
                           +
                         </button>
@@ -43,7 +43,7 @@
                           </button>
                           <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
 
-                            <a @click="updateCartItem(item.id)" class="dropdown-item" href="#"><i class="bi bi-arrow-counterclockwise mr-2"></i>Update</a>
+                            <!-- <a @click="updateCartItem(item.id)" class="dropdown-item" href="#"><i class="bi bi-arrow-counterclockwise mr-2"></i>Update</a> -->
                             <a @click="removeCartItem(item.id)" class="dropdown-item" href="#"><i class="ri-delete-bin-6-fill mr-2"></i>Remove</a>                                  
                           </div>
                       </div>
@@ -53,7 +53,7 @@
                     <th scope="row">Total</th>
                     <td></td>
                     <td></td>
-                    <td>2014</td>
+                    <td>{{calculateTotal()}}</td>
                     <td></td>
                   </tr>
                   <div class="row mb-3"></div>
@@ -115,7 +115,7 @@ export default {
     methods: {
       cancel(){
             this.$router.push('/purchases')
-         },
+      },
       goToCheckout()
       {
         this.$router.push('/checkout')
@@ -127,6 +127,16 @@ export default {
         if (this.cart[id].quantity > 0) {
           this.cart[id].quantity--;
         }
+      },
+      calculateTotal() {
+        let total = 0;
+
+        for (const productId in this.cart) {
+          const item = this.cart[productId];
+          total += item.price * item.quantity;
+        }
+
+        return total;
       },  
       updateCartItem(productId, newQuantity) {
         // Make an API request to update the quantity of the product in the cart
