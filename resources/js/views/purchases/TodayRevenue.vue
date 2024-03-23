@@ -113,7 +113,7 @@
 
             <div class="card-body pb-0">
 
-            <h5 class="card-title">Revenue <span>| Products sold today</span></h5>
+            <h5 class="card-title">Revenue <span>| Transactions today</span></h5>
             <p class="card-text">
             
             <a href="#" @click="generateReport()" class="btn btn-primary" >Generate Report</a>
@@ -122,29 +122,19 @@
                 <table id="checkedoutTable" class="table table-borderless datatable">
                 <thead>
                     <tr>
-                    <!-- <th scope="col">No</th> -->
-                    <th scope="col">Preview</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Pieces Sold</th>
-                    <th v-show="user.role == 'admin'" scope="col">Amount Payable(KES)</th> 
+                    <th scope="col">Invoice No</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Pieces Sold</th> 
                     <th scope="col">Amount Paid</th>               
-                    <th v-show="user.role == 'admin'" scope="col">Check Out By</th>
-                    <th scope="col">Comments</th>
-                    <th scope="col">Time Out</th>
+                    <th scope="col">Transaction On</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  v-for="product in todaypurchases" :key="product.id" >
-                    <!-- <th scope="col">{{visit.id}}</th> -->
-                    <th scope="row"><a href="#">
-                        <img :src="getPhoto() + product.product['image']" />
-                    </a></th>
-                    <td scope="col">{{product.product['name']}}</td>
-                    <td scope="col">{{product.pieces}}</td>
-                    <td v-show="user.role == 'admin'" scope="col">{{product.amount_payable}}</td>
-                    <td scope="col">{{product.amount_paid}}</td>
-                    <td v-show="user.role == 'admin'" scope="col">{{product.user['first_name']}} {{product.user['last_name']}}</td>
-                    <td scope="col">{{product.comments ?? 'N/A'}}</td>
+                    <tr  v-for="product in todayrevenues" :key="product.id" >
+                    <th scope="col">{{product.ref_no}}</th>
+                    <td scope="col">{{product.name}}</td>
+                    <td scope="col">{{product.quantity}}</td>
+                    <td scope="col">{{product.price}}</td>
                     <td scope="col">{{format_date(product.created_at)}}</td>
                     </tr>
                 </tbody>
@@ -170,6 +160,7 @@ export default({
     data(){
         return {
             todayrevenue: [],
+            todayrevenues: [],
             todayprojectedrevenue: [],
             yesterdayrevenue: [],
             revenuepercentage: [],
@@ -194,6 +185,7 @@ export default({
             axios.get('api/lists').then((response) => {
                 this.todaypurchases = response.data.lists.todaypurchases;
                 this.todayrevenue = response.data.lists.todayrevenue;
+                this.todayrevenues = response.data.lists.todayrevenues;
                 this.todayprojectedrevenue = response.data.lists.todayprojectedrevenue;
                 this.yesterdayrevenue = response.data.lists.yesterdayrevenue;
 

@@ -69,8 +69,8 @@
                     <div class="col-sm-10">
                         <select name="category" v-model="form.payment_method" class="form-select" id="">
                             <option value="0" disabled>Select Payment</option>
-                            <option value="MPESA" selected>MPESA (Till Number)</option>
-                            <option value="CASH">CASH</option>
+                            <option value="Mpesa" selected>MPESA (Paybill Number)</option>
+                            <option value="Cash">CASH</option>
 
                         </select>
                       <div class="invalid-feedback">Please enter flight number!</div>
@@ -79,16 +79,16 @@
                 </div>
          
                 <div class="row mb-3"></div>
-                <div v-if="form.payment_method === 'MPESA'" class="form-group row">
+                <div v-if="form.payment_method === 'Mpesa'" class="form-group row">
                   <div class="col-sm-12">
-                    <label for="inputPassword" class="form-label">Please provide phone number</label>
+                    <label for="inputPassword" class="form-label">Please provide MPESA code</label>
                     <div class="col-sm-10">
                       <input
                         type="decimal"
-                        placeholder="Format 07XXXXXXXX"
-                        v-model="form.phone_number"
-                        id="phone_number"
-                        name="phone_number"
+                        placeholder="MPESA Code"
+                        v-model="form.mpesa_code"
+                        id="mpesa_code"
+                        name="mpesa_code"
                         class="form-control"
                         required=""
                       />
@@ -98,12 +98,12 @@
                 </div>
                 <div class="row mb-3"></div>
 
-                <div v-if="form.payment_method === 'CASH'" class="col-md-6">
-                <label for="inputEmail5" class="form-label">Cash Paid</label>
+                <div class="col-md-6">
+                <label for="inputEmail5" class="form-label">Amount Paid</label>
                 <input type="number" v-model="form.cash" class="form-control" id="inputEmail5">
                 </div>
-                <div v-if="form.payment_method === 'CASH'" class="col-md-6">
-                <label for="inputPassword5" class="form-label">Balance</label><br>
+                <div class="col-md-6">
+                <label for="inputPassword5" class="form-label">Change</label><br>
                 
                  <h6>{{payableAmount}}</h6>
                 </div>        
@@ -112,9 +112,12 @@
                     <div class="col-sm-6 col-lg-6">
                     <button @click.prevent="cancel()" class="btn btn-dark">Cancel</button>
                     </div>
-                    <div class="col-sm-6 col-lg-6 text-end">
-                    <button @click="printReceipt" class="btn btn-primary">Print Receipt</button>
-                    </div>
+                     <div class="col-sm-6 col-lg-6 text-end">
+                        <button @click="printReceipt" :disabled="loading" class="btn btn-primary">
+                          <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                          Print Receipt
+                        </button>
+                      </div>
                 </div>
               </form>
             
@@ -163,6 +166,8 @@ export default {
               total += item.price * item.quantity;
             }
             this.newTotal = total;
+            this.taxAmount = 0.03 * this.newTotal;
+            this.taxableAmount = this.newTotal - this.taxAmount;
             return total;
           },
           fetchCart() {
@@ -170,6 +175,7 @@ export default {
           axios.get('/api/get-cart')
             .then(response => {
               this.cart = response.data.cart;
+              console.log("cart", this.cart)
               // Get the length of the cart (number of items)
               this.cartLength = Object.keys(this.cart).length;
             })
@@ -192,171 +198,300 @@ export default {
             .catch(error => {
               console.error('Error fetching cart:', error);
             });
-          },                    
-          submit(){
-             axios.post("api/users", this.form)
-             .then(function (response) {
-                console.log(response);
-                // this.step = 1;
-                toast.fire(
-                   'Success!',
-                   'User added!',
-                   'success'
-                )
-             })
-             .catch(function (error) {
-                console.log(error);
-                // Swal.fire(
-                //    'error!',
-                //    // phone_error + id_error + pass_number,
-                //    'error'
-                // )
-             });
-            this.$router.push('/purchases')
-
-    
           },
-          printReceipt() {
-            this.$router.push('/purchases')
-
-            // Open a new window for printing
-            const printWindow = window.open("", "_blank");
-
-            // Build the content for printing
-            const receiptContent = this.buildReceiptContent();
-
-            // Write the content to the new window
-            printWindow.document.write(receiptContent);
-
-            // Close the document stream
-            printWindow.document.close();
-
-            // Trigger the print dialog
-            printWindow.print();
-            this.clearCart();
+         async submit() {
+              try {
+                  const cartArray = Object.values(this.cart);
+                  const response = await axios.post("api/carts", { data: cartArray });
+                  console.log("cartyangu",response);
+                  this.refNo = response.data.cartItem.ref_no;
+                  // toast.fire('Success!', 'Cart added!', 'success');
+                  return Promise.resolve();
+              } catch (error) {
+                  console.log(error);
+                  return Promise.reject(error);
+              }
           },
 
+          async invoice() {
+              try {
+                  let payload;
+                  // Build payload based on your logic
+                        if (this.payableAmount >= 0) {
+                            payload = {
+                                ref_no: this.refNo,
+                                items_no: this.cartLength,
+                                mpesa_code: this.form.mpesa_code,
+                                payment_method: this.form.payment_method,
+                                amount_paid: this.form.cash,
+                                amount_due: this.newTotal,                              
+                                change: this.payableAmount,
+                                status: 1,
+                                created_by: this.user.id
+                            };
+                        } else {
+                            payload = {
+                                ref_no: this.refNo,
+                                items_no: this.cartLength,
+                                mpesa_code: this.form.mpesa_code,
+                                payment_method: this.form.payment_method,
+                                amount_paid: this.form.cash,
+                                amount_due: this.newTotal,
+                                change: this.payableAmount,
+                                //means this client bought on credit
+                                status: 0,
+                                created_by: this.user.id
+                            };
+                        }        
+                  const response = await axios.post("api/invoices", payload);
+                  console.log(response);
+                  // toast.fire('Success!', 'Invoice added!', 'success');
+                  return Promise.resolve();
+              } catch (error) {
+                  console.log(error);
+                  return Promise.reject(error);
+              }
+          },
+
+          async reduceProductQuantities() {
+              try {
+                  for (let i = 0; i < this.cart.length; i++) {
+                      const product = this.cart[i];
+                      console.log(`Reducing quantity for product ID ${product.id}`);
+                      // Make an API call to reduce the quantity of the product
+                      await axios.put(`/api/reducecartpieces/${product.id}`, {
+                          quantity: product.quantity
+                      });
+                      console.log(`Quantity reduced for product ID ${product.id}`);
+                  }
+                  
+                  console.log('All product quantities reduced successfully');
+                  
+                  // Optionally, you can clear the cart after reducing quantities
+                  // this.cart = [];
+              } catch (error) {
+                  console.error('Error reducing product quantities:', error);
+                  // Handle errors as needed
+                  throw error; // Re-throw the error to propagate it to the caller
+              }
+          },
+
+
+          async printReceipt() {
+              try {
+                  this.loading = true; // Set loading to true when button is clicked
+                  await this.submit();
+                  await this.invoice();
+
+                  // After submission and invoice, proceed to reduce product quantities
+                  await this.reduceProductQuantities();
+
+                  // After submission and invoice, proceed to print receipt
+                  const printWindow = window.open("", "_blank");
+                  const receiptContent = this.buildReceiptContent();
+                  printWindow.document.write(receiptContent);
+                  printWindow.document.close();
+                  printWindow.print();
+
+                  // Perform any additional actions after printing
+                  this.clearCart();
+                  this.$router.push('/purchases');
+              } catch (error) {
+                  console.log(error);
+                  // Handle errors that occurred during submission, invoice creation, or printing
+                  // Optionally, display an error message to the user
+                  // Swal.fire('Error!', 'An error occurred while processing the request.', 'error');
+              } finally {
+                this.loading = false; // Set loading back to false when action is complete
+              }
+          },
+
+          formatNumber(value) {
+                // Check if the value is not a number
+                if (isNaN(value)) {
+                    return value; // Return as it is
+                }
+                
+                // Convert the value to a string
+                let stringValue = value.toString();
+
+                // Split the string into integer and decimal parts
+                let parts = stringValue.split('.');
+
+                // Format the integer part with commas
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+                // If there's a decimal part, limit it to 2 decimal places
+                if (parts.length > 1) {
+                    parts[1] = parts[1].substring(0, 2);
+                } else {
+                    parts.push('00'); // If no decimal part exists, append '00'
+                }
+
+                // Join the parts back together with a decimal point
+                return parts.join('.');
+          },     
           buildReceiptContent() {
+             // Initialize an empty string to store the HTML content
+              let tableRowsHTML = '';
+              const cartArray = [];
+              for (const key in this.cart) {
+                  if (Object.prototype.hasOwnProperty.call(this.cart, key)) {
+                      cartArray.push(this.cart[key]);
+                  }
+              }
+              // Loop through each item in this.cart and generate HTML for each item
+              cartArray.forEach(item => {
+              
+                  // Generate HTML for each item
+                  tableRowsHTML += `
+                      <tr>
+                          <td colspan="2">${(item.name).toUpperCase()}</td>
+                          <td style="text-align: right;">${item.quantity} x ${item.price.toFixed(2)}</td>
+                          <td style="text-align: right;">${(item.quantity * item.price).toFixed(2)}</td>
+                      </tr>
+                  `;
+              });
             // Build the HTML content for the receipt
             const receiptHTML = `
             <!DOCTYPE html>
             <html lang="en">
             <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>KASAM STORES</title>
-              <style>
-                body {
-                  font-family: monospace;
-                  font-size: 12px;
-                  margin: 0;
-                }
-                table, th, td {
-                  border-collapse: collapse;
-                }
-                th, td {
-                  padding: 5px;
-                  text-align: left;
-                }
-                .header {
-                  text-align: center;
-                }
-                .footer {
-                  text-align: right;
-                }
-              </style>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Payment Receipt</title>
+            <style>
+            body {
+              font-family: 'Courier New', Courier, monospace; /* Updated font-family */
+              font-size: 15px;
+              line-height: 1.5;
+            }
+
+            .receipt-header {
+              text-align: center;
+              margin-top: 20px;
+              margin-bottom: 2px;
+            }
+
+            .receipt-body {
+              text-align: left;
+              padding: 5px;
+            }
+
+            .table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+
+            .table th,
+            .table td {
+              padding: 5px;
+              text-align: left;
+            }
+
+            .table strong {
+              font-weight: bold;
+            }
+
+            .table-separator {
+                border-top: 1px dotted #888; /* Lighter color */
+                border-bottom: 1px dotted #888; /* Lighter color */
+                margin-top: 2px;
+                margin-bottom: 2px;
+            }
+            .space-above {
+              margin-top: 20px; /* Adjust the space above */
+            }  
+            .font {
+              font-size: 24px; /* Change the font size */
+            }
+            .footer {
+              text-align: center;
+              margin-top: 20px;
+            }
+            </style>
             </head>
             <body>
-              <div class="header">
-                <h1>KASAM STORES</h1>
-                <p>P.O. BOX 1716-50100 KAKAMEGA Opp. Kenya Power Rd.</p>
-                <p>Mob: 0722 844 910</p>
+              <div class="receipt-header">
+                <div class="font"><strong>KASAM STORES</strong></div>
+                <div>P.O. BOX 1253  KAKAMEGA 58100</div>
+                <div>TEL: 0733 688 755</div>
+                <div>LIC:KRA/ETR/09052006/004440</div> 
+                <div>VAT #: 0025798E</div>
+                <div>PIN: P0511031765</div>
               </div>
-              <div>
-                <p>VAT: Barware - CHED</p>
-                <p>WAT NO. 0161493R</p>
-                <p>PIN: A0146635900</p>
-                <p>Tel: 0769 08207</p>
-              </div>
-              <div class="header">
-                <h3>FISCAL RECEIPT</h3>
-                <h3>ORIGINAL</h3>
-              </div>
-              <table>
-                <tr>
-                  <th>QTY</th>
-                  <th>Partic</th>
-                  <th>Invoice Nr:</th>
-                </tr>
-                <tr v-for="(item) in cart" :key="productId">
-                  <td>0001</td>
-                  <td>Operator 01</td>
-                  <td>000000000001196</td>
-                </tr>
-                <tr>
-                  <td>A</td>
-                  <td>00001 Art. 00001</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>Sum</td>
-                  <td>1.000 pcs X 40500.00</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td>700 7000</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td>40500.00 A</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td>1350 13500</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>TOTAL</td>
-                  <td>40500.00</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>TOTAL A-16.00%</td>
-                  <td>40500.00</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>TOTAL TAX A</td>
-                  <td>5586.21</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>TUTAL TAX</td>
-                  <td>5586.21</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>CASH</td>
-                  <td>40500.00</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>ITEMS NUMBER</td>
-                  <td>1</td>
-                </tr>
-              </table>
-              <div class="footer">
-                <p>Printed on: ${new Date().toLocaleString()}</p>
-                <p>CU Serial No: FT ANY LIAB</p>
-                <p>CU Invoice N:0110691570000001198</p>
-                <p>EO&E No 4172</p>
+              <div class="receipt-body">
+                <div>RECEIPT DATE: ${new Date().toLocaleString()}</div>
+                <div class="table-separator"></div>    
+                <div>Invoice No: ${this.refNo}</div>
+                <div class="table-separator"></div>    
+                <table class="table">
+                  <tbody>
+                    ${tableRowsHTML}
+                    <!-- Other items -->
+                  </tbody>
+                </table>
+                <div class="table-separator"></div>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td style="text-align: left;"><strong>TOTAL</strong></td>
+                      <td style="text-align: right;"></td>
+                      <td style="text-align: right;"></td>
+                      <td style="text-align: right;"><strong>${this.formatNumber(this.newTotal)}</strong></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: left;">CASH PAID</td>
+                      <td style="text-align: right;"></td>
+                      <td style="text-align: right;"></td>
+                      <td style="text-align: right;">${this.formatNumber(this.form.cash)}</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: left;">CHANGE</td>
+                      <td style="text-align: right;"></td>
+                      <td style="text-align: right;"></td>
+                      <td style="text-align: right;">${this.formatNumber(this.payableAmount)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="table-separator"></div>
+                <div style="text-align: left;">TOTAL ITEMS: ${this.cartLength}</div>    
+                <div style="text-align: center;">TAX SUMMARY</div>    
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>TAX DESCRIPTION</th>
+                      <th>TAXABLE AMOUNT</th>
+                      <th>TAX AMOUNT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>TOT - 3.00%</td>
+                      <td>${this.formatNumber(this.taxableAmount)}</td>
+                      <td>${this.formatNumber(this.taxAmount)}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Total</strong></td>
+                      <td></td>
+                      <td><strong>${this.formatNumber(this.taxAmount)}</strong></td>
+                    </tr>
+                    <!-- Other tax entries -->
+                  </tbody>
+                </table>
+                <div class="table-separator"></div>
+                <div class="table-separator"></div>
+
+                <div class="space-above">All prices inclusive TOT where Applicable</div>
+
+                <div>You were Served by : ${this.user.first_name} ${this.user.last_name}</div>
+                <div class="footer">
+                  THANK YOU FOR SHOPPING WITH US
+                </div>
               </div>
             </body>
             </html>
+
             `;
 
             return receiptHTML;
@@ -374,6 +509,7 @@ export default {
    mounted()
    {
     this.fetchCart();
+    this.user = JSON.parse(localStorage.getItem('user'));
    }
 }
 </script>

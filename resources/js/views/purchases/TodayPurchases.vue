@@ -79,7 +79,7 @@
 
             <div class="card-body pb-0">
 
-            <h5 class="card-title">Sales <span>| Products sold today</span></h5>
+            <h5 class="card-title">Sales <span>| Invoices processed today</span></h5>
             <p class="card-text">
             
             <!-- <a href="visitors.php" class="btn btn-primary" >Add Visitor</a> -->
@@ -89,29 +89,43 @@
                 <thead>
                     <tr>
                     <!-- <th scope="col">No</th> -->
-                    <th scope="col">Preview</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Pieces Sold</th>
-                    <!-- <th v-show="user.role == 'admin'" scope="col">Amount Payable(KES)</th> 
-                    <th scope="col">Amount Paid</th>                -->
+                    <th scope="col">Invoice No</th>
+                    <th scope="col">Items Sold</th>
+                    <th scope="col">Amount Due</th>               
+                    <th scope="col">Amount Paid</th>               
+                    <!-- <th scope="col">Change</th>                -->
                     <th v-show="user.role == 'admin'" scope="col">Check Out By</th>
-                    <th scope="col">Comments</th>
                     <th scope="col">Time Out</th>
+                    <th scope="col">Status</th>
+                    <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  v-for="product in todaypurchases" :key="product.id" >
+                    <tr  v-for="invoice in todaypurchases" :key="invoice.id" >
                     <!-- <th scope="col">{{visit.id}}</th> -->
-                    <th scope="row"><a href="#">
-                        <img :src="getPhoto() + product.product['image']" />
-                    </a></th>
-                    <td scope="col">{{product.product['name']}}</td>
-                    <td scope="col">{{product.pieces}}</td>
-                    <!-- <td v-show="user.role == 'admin'" scope="col">{{product.amount_payable}}</td>
-                    <td scope="col">{{product.amount_paid}}</td> -->
-                    <td v-show="user.role == 'admin'" scope="col">{{product.user['first_name']}} {{product.user['last_name']}}</td>
-                    <td scope="col">{{product.comments ?? 'N/A'}}</td>
-                    <td scope="col">{{dateTime(product.created_at)}}</td>
+                    <td scope="col">{{invoice.ref_no}}</td>
+                    <td scope="col">{{invoice.items_no}}</td>
+                    <td scope="col">{{invoice.amount_due}}</td>
+                    <td scope="col">{{invoice.amount_paid}}</td>
+                    <!-- <td scope="col">{{invoice.change}}</td> -->
+                    <td>
+                      <span v-if="invoice.status == 1" class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Cleared</span>
+                      <span v-else class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i> Pending</span>
+                    </td>                    
+                    <td v-show="user.role == 'admin'" scope="col">{{invoice.user['first_name']}} {{invoice.user['last_name']}}</td>
+                    <td scope="col">{{dateTime(invoice.created_at)}}</td>
+                    <td>
+                      <div class="btn-group" role="group">
+                          <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary rounded-pill dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Action
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                          <a @click="navigateTo('/viewpurchase/'+invoice.id )" class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>View</a>                                            
+                          <!-- <a v-if="user.id == 1" @click="navigateTo('/editstatement/'+statement.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Edit</a> -->
+                          <a v-if="invoice.status == 0" @click="settle(invoice.id, invoice.ref_no)" class="dropdown-item" href="#"><i class="ri-check-fill mr-2"></i>Settle</a>
+                          </div>
+                      </div>
+                    </td>
                     </tr>
                 </tbody>
                 </table>
@@ -152,6 +166,9 @@ export default({
           if(value){
             return moment(String(value)).format('MMM Do YYYY')
           }
+        },
+        navigateTo(location){
+            this.$router.push(location)
         },
         getPhoto()
         {

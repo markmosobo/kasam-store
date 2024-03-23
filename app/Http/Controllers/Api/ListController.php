@@ -11,6 +11,8 @@ use App\Models\RestockProduct;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Models\Activity;
+use App\Models\Invoice;
+use App\Models\Cart;
 use Carbon\Carbon;
 
 class ListController extends Controller
@@ -27,33 +29,35 @@ class ListController extends Controller
         $restockedtoday = RestockProduct::with('product','supplier','user')->whereDay('created_at', now()->day)->get();
         $products = Product::with('supplier','category','user')->get();
 
-        $todaypurchases = Purchase::with('product','user')->whereDay('created_at', now()->day)->get();
-        $weekpurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $todaypurchases = Invoice::with('user')->whereDay('created_at', now()->day)->get();
+        $weekpurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
          [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
-        $monthpurchases = Purchase::with('product','user')->whereMonth('created_at', Carbon::now()->month)->get();
-        $yearpurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $monthpurchases = Invoice::with('user')->whereMonth('created_at', Carbon::now()->month)->get();
+        $yearpurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->get();
-        $quarterlypurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $quarterlypurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->startOfQuarter(), Carbon::now()->endOfDay()])->get();
-        $lastyearpurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $lastyearpurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->subYear()->startOfYear(), Carbon::now()->subYear()->endOfYear()])->get();
-        $allpurchases = Purchase::select("*")->with('product','user')->get();
-        $twentyfourhourpurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $allpurchases = Invoice::select("*")->with('user')->get();
+        $twentyfourhourpurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->subHours(24), Carbon::now()->endOfDay()])->get();
-        $yesterdaypurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $yesterdaypurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->subDay()->startOfDay(), Carbon::now()->subDay()->endOfDay()])->get();
-        $lastsevendayspurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $lastsevendayspurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->subDays(7)->startOfDay(), Carbon::now()->endOfDay()])->get();
-        $lastthirtydayspurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $lastthirtydayspurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->subDays(29)->startOfDay(), Carbon::now()->endOfDay()])->get();
-        $lastninetydayspurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $lastninetydayspurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->subDays(89)->startOfDay(), Carbon::now()->endOfDay()])->get();
-        $lastmonthpurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $lastmonthpurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth()])->get();
-        $lastyearpurchases = Purchase::select("*")->with('product','user')->whereBetween('created_at',
+        $lastyearpurchases = Invoice::select("*")->with('user')->whereBetween('created_at',
         [Carbon::now()->subYear()->startOfYear(), Carbon::now()->subYear()->endOfYear()])->get();
 
+        //from transactions/carts
         $todayrevenue = Purchase::whereDay('created_at', now()->day)->sum('amount_paid');
+        $todayrevenues = Cart::whereDay('created_at', now()->day)->get();
         $todayprojectedrevenue = Purchase::whereDay('created_at', now()->day)->sum('amount_payable');
         $yesterdayrevenue = Purchase::select("*")->with('product','user')->whereBetween('created_at',
         [Carbon::now()->subDay()->startOfDay(), Carbon::now()->subDay()->endOfDay()])->sum('amount_paid');
@@ -129,7 +133,9 @@ class ListController extends Controller
                 "lastninetydayspurchases" => $lastninetydayspurchases,
                 "lastmonthpurchases" => $lastmonthpurchases,
                 "lastyearpurchases" => $lastyearpurchases,
+
                 "todayrevenue" => $todayrevenue,
+                "todayrevenues" => $todayrevenues,
                 "todayprojectedrevenue" => $todayprojectedrevenue,
                 "yesterdayrevenue" => $yesterdayrevenue,
                 "twentyfourhourrevenue" => $twentyfourhourrevenue,

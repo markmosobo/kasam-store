@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 class CartController extends Controller
 {
@@ -106,6 +108,51 @@ class CartController extends Controller
         Session::forget('cart');
 
         return response()->json(['message' => 'Cart cleared successfully']);
+    }
+
+    //meant for carts table
+    public function store(Request $request)
+    {
+        $startOfMonth = Carbon::now()->startOfMonth();
+            $formattedDate = $startOfMonth->format('M Y');
+            $orgDate = now();
+            $date = str_replace('-"', '/', $orgDate);
+            $newDate = date("YmdHis", strtotime($date));
+            $refNo = $newDate;
+        // Assuming Data is your model
+       foreach ($request->input('data') as $data) {
+            $cartItem = Cart::create([
+                'product_id' => $data['id'],
+                'name' => $data['name'],
+                'price' => $data['price'],
+                'quantity' => $data['quantity'],
+                'ref_no' => $refNo
+            ]);
+        }
+
+        
+
+        return response()->json([
+            'status' => true,
+            'message' => "Cart Retrieved successfully!",
+            'cartItem' => $cartItem
+        ], 200);
+    }
+
+    public function searchSimilarData(Request $request)
+    {
+        // Retrieve the refNo from the request query parameters
+        $refNo = $request->input('refNo');
+
+        // Perform the database query to find similar data
+        $similarData = Cart::where('ref_no', 'like', '%' . $refNo . '%')->get();
+
+        // Return the results
+         return response()->json([
+            'status' => true,
+            'message' => "Cart Retrieved successfully!",
+            'similarData' => $similarData
+        ], 200);
     }
 
     

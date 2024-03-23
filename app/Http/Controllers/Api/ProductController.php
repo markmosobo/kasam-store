@@ -170,6 +170,30 @@ class ProductController extends Controller
 
     }
 
+    public function reduceCartPieces(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        
+        // Ensure pieces and quantity are numerical values
+        $productPieces = intval($product->pieces);
+        $requestedQuantity = intval($request->quantity);
+
+        // Ensure requested quantity does not exceed available pieces
+        if ($requestedQuantity > $productPieces) {
+            return response()->json(['error' => 'Requested quantity exceeds available pieces'], 422);
+        }
+
+        // Calculate new pieces count
+        $pieces = $productPieces - $requestedQuantity;
+
+        // Update product pieces
+        $product->pieces = $pieces;
+        $product->save();
+
+        return response()->json(['message' => 'Product pieces reduced successfully'], 200);
+    }
+
+
     public function productRestock(Request $request, $id)
     {
         $monthrestocks = RestockProduct::where('product_id', $id)->with('product','user')->orderByDesc('created_at')->whereMonth('created_at', Carbon::now()->month)->get();

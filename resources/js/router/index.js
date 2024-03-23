@@ -2,6 +2,7 @@ import {  createRouter, createWebHistory  } from 'vue-router';
 import Index from '../views/Index.vue'
 import Categories from '../views/categories/Categories.vue'
 import Suppliers from '../views/suppliers/Suppliers.vue'
+import ViewPurchase from '../views/purchases/Purchase.vue'
 import Purchases from '../views/purchases/Purchases.vue'
 import Users from '../views/users/Users.vue'
 import AllProducts from '../views/products/AllProducts.vue'
@@ -233,6 +234,12 @@ const routes = [
         component: Purchases,
         beforeEnter : guardMyroute,
     },
+    {
+        path:'/viewpurchase/:id',
+        name: 'viewpurchase',
+        component: ViewPurchase,
+        beforeEnter : guardMyroute,
+    },    
     {
         path:'/purchaseproduct/:id',
         name: 'purchase-product',

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\ProductHistoryController;
 use App\Http\Controllers\Api\UserHistoryController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\InvoiceController;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){
     Route::get('/user', function( Request $request ){
@@ -37,7 +38,10 @@ Route::apiResource('purchases',PurchaseController::class);
 Route::apiResource('users',UserController::class);
 Route::get('lists',[ListController::class, 'index']);
 Route::post('restockproducts/{id}',[ProductController::class, 'restock']);
+//just reduces pieces
 Route::put('reduceproductpieces/{id}',[ProductController::class,'reducePieces']);
+//reduces cartpieces after invoice
+Route::put('reducecartpieces/{id}',[ProductController::class,'reduceCartPieces']);
 Route::put('profile/{id}',[ProfileController::class, 'update']);
 Route::put('changepassword/{id}',[ProfileController::class, 'changePassword']);
 Route::get('activities/{id}',[ActivityController::class,'activities']);
@@ -64,3 +68,9 @@ Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('cart.sto
 Route::post('update-cart', [CartController::class, 'updateCart'])->name('cart.update');
 Route::post('remove-from-cart', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::post('clear-cart', [CartController::class, 'clearAllCart'])->name('cart.clear');
+
+//related to the carts table that stores all carts
+Route::post('carts', [CartController::class, 'store']);
+Route::post('invoices', [InvoiceController::class, 'store']);
+Route::get('invoice/{id}', [InvoiceController::class, 'single']);
+Route::get('/search/similar-data', [CartController::class, 'searchSimilarData']);
