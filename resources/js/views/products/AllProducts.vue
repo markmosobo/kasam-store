@@ -14,15 +14,25 @@
                 
                 <!-- <a href="visitors.php" class="btn btn-primary" >Add Visitor</a> -->
                 <router-link to="/add-product" custom v-slot="{ href, navigate, isActive }">
-                        <a
-                        :href="href"
-                        :class="{ active: isActive }"
-                        class="btn btn-primary"
-                        @click="navigate"
-                        >
-                        Add Product
-                        </a>
-                    </router-link>
+                    <a
+                    :href="href"
+                    :class="{ active: isActive }"
+                    class="btn btn-primary me-2"
+                    @click="navigate"
+                    >
+                    Add Product
+                    </a>
+                </router-link>
+                <router-link to="#" custom v-slot="{ href, navigate, isActive }">
+                    <a
+                    :href="href"
+                    :class="{ active: isActive }"
+                    class="btn btn-secondary"
+                    @click.prevent="exportToExcel"
+                    >
+                    Export
+                    </a>
+                </router-link>
                 </p>
                 <table id="allProductsTable" class="table table-borderless datatable">
                 <thead>
@@ -137,6 +147,7 @@ import moment from 'moment';
   
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
 
 
 const toast = Swal.mixin({
@@ -170,6 +181,27 @@ export default({
         getPhoto()
         {
             return "/storage/products/";
+        },
+        exportToExcel() {
+          const productsData = this.products.map(product => ({
+            "Item Name": product.name,
+            "Item type": "",
+            "Purchase Price (KES)": product.buying_price,
+            "Beginning Stock": product.pieces,
+            "Origin": "Kenya",
+            "PKG Unit": "",
+            "Sale Price (KES)": product.selling_price,
+            "Qty unit": "",
+            "Tax type": "",
+            // "Added By": `${product.user.first_name} ${product.user.last_name}`,
+            // "Date In": this.format_date(product.created_at)
+          }));
+
+          const worksheet = XLSX.utils.json_to_sheet(productsData);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+
+          XLSX.writeFile(workbook, "products.xlsx");
         },
         loadLists(){
             axios.get('api/lists').then((response) => {

@@ -26,16 +26,16 @@
                     <td>{{item.name}}</td>
                     <td>
                       <div class="wrapper">
-                        <button class="btn btn--minus" @click="decrease(productId)" type="button" name="button">
+              <!--           <button class="btn btn--minus" @click="decrease(productId)" type="button" name="button">
                         -
-                        </button>
-                        <input class="quantity" type="text" name="name" :value="item.quantity" readonly>
-                        <button class="btn btn--plus" @click="increase(productId)" type="button" name="button">
+                        </button> -->
+                        <input class="quantity custom-input" type="number" v-model.number="item.quantity" @input="updateCartItem(productId, item.quantity)"> 
+                    <!--     <button class="btn btn--plus" @click="increase(productId)" type="button" name="button">
                           +
-                        </button>
+                        </button> -->
                       </div>
                     </td>
-                    <td>{{item.price * item.quantity}}</td>
+                    <td>{{formatPrice(item.price * item.quantity)}}</td>
                     <td>
                       <div class="btn-group" role="group">
                           <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -53,7 +53,7 @@
                     <th scope="row">Total</th>
                     <td></td>
                     <td></td>
-                    <td>{{calculateTotal()}}</td>
+                    <td>{{formatPrice(calculateTotal())}}</td>
                     <td></td>
                   </tr>
                   <div class="row mb-3"></div>
@@ -81,6 +81,7 @@
 <script>
 import TheMaster from "@/components/TheMaster.vue";
 import Swal from 'sweetalert2';
+import numeral from 'numeral';
 
 
 const toast = Swal.mixin({
@@ -120,13 +121,35 @@ export default {
       {
         this.$router.push('/checkout')
       },
-      increase(id) {
-        this.cart[id].quantity++;
+      formatPrice(value) {
+          return numeral(value).format('0,0');
       },
-      decrease(id) {
-        if (this.cart[id].quantity > 0) {
-          this.cart[id].quantity--;
-        }
+      increase(index) {
+          if (this.cart[index]) {
+              this.cart[index].quantity++;
+          }
+          this.updateCartItem(index, this.cart[index].quantity);
+      },
+      decrease(index) {
+          if (this.cart[index] && this.cart[index].quantity > 0) {
+              this.cart[index].quantity--;
+          }
+          this.updateCartItem(index, this.cart[index].quantity);
+      },
+      updateCartItem(productId, newQuantity) {
+        // Make an API request to update the quantity of the product in the cart
+        axios.post('/api/update-cart', {
+            product_id: productId,
+            quantity: newQuantity,
+        })
+        .then(response => {
+            console.log(response.data.message);
+            // Fetch the updated cart data after the update
+            this.fetchCart();
+        })
+        .catch(error => {
+            console.error('Error updating cart:', error);
+        });
       },
       calculateTotal() {
         let total = 0;
@@ -218,3 +241,9 @@ export default {
    }
 }
 </script>
+
+<style>
+.custom-input {
+    width: 50px;
+}
+</style>

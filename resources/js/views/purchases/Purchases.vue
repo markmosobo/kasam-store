@@ -42,7 +42,9 @@
                     </td> -->
                     <td>
                         <button type="submit" v-on:click="addToCart(product)" class="btn btn-primary">
-                            Add To Cart</button>
+    <i class="fas fa-cart-plus"></i>
+</button>
+
                     </td>                                        
                     </tr>
                 </tbody>

@@ -106,85 +106,37 @@
         </router-link>
       </li><!-- End Dashboard Nav -->
 
-      <!-- <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide"></i><span>Manage Properties</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-menu-button-wide"></i><span>Manage KRA</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <router-link to="all-properties" custom v-slot="{ href, navigate, isActive }">
+            <router-link to="/aboutinfo" custom v-slot="{ href, navigate, isActive }">
                 <a
                   :href="href"
                   :class="{ active: isActive }"
                   class="nav-link"
                   @click="navigate"
                 >
-              <i class="bi bi-circle"></i><span>All Properties</span>
+              <i class="bi bi-circle"></i><span>About Shop</span>
               </a>
             </router-link>
-          </li>
+          </li> 
           <li>
-            <router-link to="all-categories" custom v-slot="{ href, navigate, isActive }">
-              <a
-                :href="href"
-                :class="{ active: isActive }"
-                class="nav-link"
-                @click="navigate"
-              >
-            <i class="bi bi-circle"></i><span>Categories</span>
-            </a>
+            <router-link to="/taxtot" custom v-slot="{ href, navigate, isActive }">
+                <a
+                  :href="href"
+                  :class="{ active: isActive }"
+                  class="nav-link"
+                  @click="navigate"
+                >
+              <i class="bi bi-circle"></i><span>TOT Rate</span>
+              </a>
             </router-link>
-          </li>
-          <li>
-            <router-link to="all-propertytypes" custom v-slot="{ href, navigate, isActive }">
-              <a
-                :href="href"
-                :class="{ active: isActive }"
-                class="nav-link"
-                @click="navigate"
-              >
-            <i class="bi bi-circle"></i><span>Types</span>
-            </a>
-            </router-link>
-          </li>
-          <li>
-            <router-link to="all-conditions" custom v-slot="{ href, navigate, isActive }">
-              <a
-                :href="href"
-                :class="{ active: isActive }"
-                class="nav-link"
-                @click="navigate"
-              >
-              <i class="bi bi-circle"></i><span>Conditions</span>
-            </a>
-            </router-link>
-          </li>  
-          <li>
-            <router-link to="all-furnishings" custom v-slot="{ href, navigate, isActive }">
-              <a
-                :href="href"
-                :class="{ active: isActive }"
-                class="nav-link"
-                @click="navigate"
-              >
-              <i class="bi bi-circle"></i><span>Furnishings</span>
-            </a>
-            </router-link>
-          </li>     
-          <li>
-            <router-link to="all-locations" custom v-slot="{ href, navigate, isActive }">
-              <a
-                :href="href"
-                :class="{ active: isActive }"
-                class="nav-link"
-                @click="navigate"
-              >
-              <i class="bi bi-circle"></i><span>Locations</span>
-            </a>
-            </router-link>
-          </li>                       
+          </li>                     
         </ul>
-      </li> -->
+      </li> 
       <!-- End Components Nav -->
 
 

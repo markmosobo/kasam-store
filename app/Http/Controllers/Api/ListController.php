@@ -13,6 +13,8 @@ use App\Models\User;
 use App\Models\Activity;
 use App\Models\Invoice;
 use App\Models\Cart;
+use App\Models\TaxTot;
+use App\Models\AboutInfo;
 use Carbon\Carbon;
 
 class ListController extends Controller
@@ -111,6 +113,8 @@ class ListController extends Controller
         $activities = Activity::latest()->with('user')->whereDay('created_at', now()->day)->take(6)->get();
         $allactivities = Activity::with('user')->get();
         $users = User::all();
+        $taxtot = TaxTot::first()->get();
+        $aboutinfo = AboutInfo::first()->get();
         return response()->json([
             "lists" => [
                 "products" => $products,
@@ -165,7 +169,10 @@ class ListController extends Controller
 
                 "users" => $users,
                 "activities" =>$activities,
-                "allactivities" =>$allactivities
+                "allactivities" =>$allactivities,
+
+                "taxtot" =>$taxtot,
+                "aboutinfo" =>$aboutinfo
             ]
         ]);
     }

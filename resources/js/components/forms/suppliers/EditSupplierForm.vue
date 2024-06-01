@@ -151,7 +151,7 @@
                 // this.step = 1;
                 toast.fire(
                    'Success!',
-                   'Supplier added!',
+                   'Supplier updated!',
                    'success'
                 )
              })

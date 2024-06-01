@@ -12,12 +12,9 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "@vitejs/plugin-vue": "^4.2.3",
-        "vue": "^3.2.36",
-        "vue-loader": "^17.0.1",
-
         "@fortawesome/fontawesome-free": "^6.4.0",
         "@popperjs/core": "^2.11.7",
+        "@vitejs/plugin-vue": "^4.2.3",
         "axios": "^1.4.0",
         "bootstrap": "^5.2.3",
         "bootstrap-table": "^1.21.4",
@@ -26,10 +23,14 @@
         "jquery": "^3.6.3",
         "lodash": "^4.17.11",
         "moment": "^2.29.4",
+        "numeral": "^2.0.6",
         "sweetalert2": "^11.7.5",
+        "vue": "^3.2.36",
+        "vue-loader": "^17.0.1",
         "vue-popperjs": "^1.5.3",
         "vue-router": "^4.2.0",
         "vue-select-image": "^1.9.0",
-        "vuex": "^4.1.0"
+        "vuex": "^4.1.0",
+        "xlsx": "^0.18.5"
     }
 }

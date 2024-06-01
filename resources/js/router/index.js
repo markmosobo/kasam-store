@@ -126,6 +126,12 @@ import MyQuarterlyRevenue from '../views/purchases/MyQuarterlyRevenue.vue'
 import Checkout from '../views/payment/Checkout.vue'
 import Cart from '../views/payment/Cart.vue'
 
+import TaxTot from '../views/payment/TaxTot.vue'
+import EditTaxTot from '../views/payment/EditTaxTot.vue'
+
+import AboutInfo from '../views/payment/AboutInfo.vue'
+import EditAboutInfo from '../views/payment/EditAboutInfo.vue'
+
 function guardMyroute(to, from, next)
 {
  var isAuthenticated= false;
@@ -869,7 +875,31 @@ const routes = [
         name: 'cart',
         component: Cart,
         beforeEnter : guardMyroute,
-    },        
+    }, 
+    {
+        path:'/taxtot',
+        name: 'taxtot',
+        component: TaxTot,
+        beforeEnter : guardMyroute,
+    },
+    {
+        path:'/edit-taxtot/:id',
+        name: 'edit-taxtot',
+        component: EditTaxTot,
+        beforeEnter : guardMyroute,
+    },  
+    {
+        path:'/aboutinfo',
+        name: 'aboutinfo',
+        component: AboutInfo,
+        beforeEnter : guardMyroute,
+    },
+    {
+        path:'/edit-aboutinfo/:id',
+        name: 'edit-aboutinfo',
+        component: EditAboutInfo,
+        beforeEnter : guardMyroute,
+    },       
 ];
 
 const router = createRouter({

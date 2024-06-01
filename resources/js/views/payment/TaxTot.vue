@@ -21,10 +21,10 @@
                   </div>
   
                   <div class="card-body pb-0">
-                    <h5 class="card-title">All Categories <span>| Today</span></h5>
+                    <h5 class="card-title">Current TOT Tax <span>| Rate</span></h5>
                     <p class="card-text">
                  
-                    <router-link to="/add-category" custom v-slot="{ href, navigate, isActive }">
+<!--                     <router-link to="/add-category" custom v-slot="{ href, navigate, isActive }">
                         <a
                           :href="href"
                           :class="{ active: isActive }"
@@ -33,29 +33,29 @@
                         >
                           Add Category
                         </a>
-                    </router-link>
+                    </router-link> -->
           
                     </p>
 
                     <table id="AllCategoriesTable" class="table table-borderless">
                       <thead>
                         <tr>
-                          <th scope="col">Name</th>
-                          <th scope="col">Created On</th>
+                          <th scope="col">Rate</th>
+                          <th scope="col">Updated On</th>
                           <th scope="col">Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="category in categories" :key="category.id">
-                          <td>{{category.name}}</td>
-                          <td>{{format_date(category.created_at) }}</td>
+                        <tr v-for="tax in taxtot" :key="tax.id">
+                          <td>{{tax.rate}}</td>
+                          <td>{{format_date(tax.updated_at) }}</td>
                           <td>
                             <div class="btn-group" role="group">
                                 <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Action
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
-                                  <a @click="navigateTo('/editcategory/'+category.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Edit</a>
+                                  <a @click="navigateTo('/edit-taxtot/'+tax.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Edit</a>
                                   <!-- <a @click="deleteCategory(category.id)" class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>Delete</a>    -->
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
   export default {
     data(){
       return {
-        categories: [],
+        taxtot: [],
       }
     },
     methods: {
@@ -141,14 +141,15 @@
               })
       },
       loadLists() {
-         axios.get('api/categories').then((response) => {
-         this.categories = response.data.data;
-         setTimeout(() => {
+           axios.get('api/lists').then((response) => {
+           this.taxtot = response.data.lists.taxtot;
+           console.log(response)
+           setTimeout(() => {
               $("#AllCategoriesTable").DataTable();
-          }, 10);
-
-         });
-      },
+           }, 10);
+  
+           });
+        },
     },
     components : {
         TheMaster,

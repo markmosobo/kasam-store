@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\ProductHistoryController;
 use App\Http\Controllers\Api\UserHistoryController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\InvoiceController;
+use App\Http\Controllers\Api\TaxTotController;
+use App\Http\Controllers\Api\AboutInfoController;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){
     Route::get('/user', function( Request $request ){
@@ -74,3 +76,10 @@ Route::post('carts', [CartController::class, 'store']);
 Route::post('invoices', [InvoiceController::class, 'store']);
 Route::get('invoice/{id}', [InvoiceController::class, 'single']);
 Route::get('/search/similar-data', [CartController::class, 'searchSimilarData']);
+
+//tot taxation APIs
+Route::put('taxtot/{id}', [TaxTotController::class, 'update']);
+Route::get('taxtot/{id}', [TaxTotController::class, 'single']);
+
+Route::put('aboutinfo/{id}', [AboutInfoController::class, 'update']);
+Route::get('aboutinfo/{id}', [AboutInfoController::class, 'single']);

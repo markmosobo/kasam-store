@@ -24,13 +24,13 @@
                         <th scope="row">{{item.id}}</th>
                         <td>{{item.name}}</td>
                         <td>{{item.quantity}}</td>
-                        <td>{{item.price * item.quantity}}</td>
+                        <td>{{formatPrice(item.price * item.quantity)}}</td>
                       </tr>
                       <tr>
                         <th scope="row">Total</th>
                         <td></td>
                         <td></td>
-                        <td>{{calculateTotal()}}</td>
+                        <td>{{formatPrice(calculateTotal())}}</td>
                       </tr> 
                     </tbody>
                   </table>
@@ -105,7 +105,7 @@
                 <div class="col-md-6">
                 <label for="inputPassword5" class="form-label">Change</label><br>
                 
-                 <h6>{{payableAmount}}</h6>
+                 <h6>{{formatPrice(payableAmount)}}</h6>
                 </div>        
                 <div class="row mb-3"></div>
                 <div class="col-lg-12 felx mt-4 row">
@@ -132,6 +132,7 @@
 
 <script>
 import TheMaster from "@/components/TheMaster.vue";
+import numeral from 'numeral';
 
 export default {
     data()
@@ -151,12 +152,17 @@ export default {
          message: "",
          successMessage: "",
          loading: false,
-         total: ''
+         total: '',
+         taxtot: [],
+         aboutinfo: []
         }
     },
     methods: {
          cancel(){
             this.$router.push('/purchases')
+         },
+         formatPrice(value) {
+            return numeral(value).format('0,0');
          },
          calculateTotal() {
             let total = 0;
@@ -330,6 +336,24 @@ export default {
 
                 // Join the parts back together with a decimal point
                 return parts.join('.');
+          },
+          formatTax(value) {
+              return numeral(value).format('0,0.00');
+          },
+          loadLists() {
+             axios.get('api/lists').then((response) => {
+             this.taxtot = response.data.lists.taxtot[0];
+             this.totTaxRate = this.taxtot.rate;
+             this.aboutinfo = response.data.lists.aboutinfo[0];
+             this.address = this.aboutinfo.address;
+             this.phone1 = this.aboutinfo.phone1;
+             this.phone2 = this.aboutinfo.phone2;
+             this.email = this.aboutinfo.email;
+             this.kraPin = this.aboutinfo.kra_pin;
+             this.vat = this.aboutinfo.vat;
+             console.log(this.aboutinfo);
+
+             });
           },     
           buildReceiptContent() {
              // Initialize an empty string to store the HTML content
@@ -347,8 +371,8 @@ export default {
                   tableRowsHTML += `
                       <tr>
                           <td colspan="2">${(item.name).toUpperCase()}</td>
-                          <td style="text-align: right;">${item.quantity} x ${item.price.toFixed(2)}</td>
-                          <td style="text-align: right;">${(item.quantity * item.price).toFixed(2)}</td>
+                          <td style="text-align: right;">${item.quantity} x ${this.formatNumber(item.price)}</td>
+                          <td style="text-align: right;">${this.formatNumber(item.quantity * item.price)}</td>
                       </tr>
                   `;
               });
@@ -414,11 +438,10 @@ export default {
             <body>
               <div class="receipt-header">
                 <div class="font"><strong>KASAM STORES</strong></div>
-                <div>P.O. BOX 1253  KAKAMEGA 58100</div>
-                <div>TEL: 0733 688 755</div>
-                <div>LIC:KRA/ETR/09052006/004440</div> 
-                <div>VAT #: 0025798E</div>
-                <div>PIN: P0511031765</div>
+                <div>${this.address}</div>
+                <div>TEL: ${this.phone1}</div>
+                <div>VAT #: ${this.vat}</div>
+                <div>PIN: ${this.kraPin}</div>
               </div>
               <div class="receipt-body">
                 <div>RECEIPT DATE: ${new Date().toLocaleString()}</div>
@@ -467,7 +490,7 @@ export default {
                   </thead>
                   <tbody>
                     <tr>
-                      <td>TOT - 3.00%</td>
+                      <td>TOT - ${this.formatTax(this.totTaxRate)}%</td>
                       <td>${this.formatNumber(this.taxableAmount)}</td>
                       <td>${this.formatNumber(this.taxAmount)}</td>
                     </tr>
@@ -509,6 +532,7 @@ export default {
    mounted()
    {
     this.fetchCart();
+    this.loadLists();
     this.user = JSON.parse(localStorage.getItem('user'));
    }
 }

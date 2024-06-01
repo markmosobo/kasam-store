@@ -54,15 +54,15 @@
                 <!-- <i class="bi bi-exclamation-circle text-warning"></i> -->
                 <div>
                     <h4>{{item.name}}</h4>
-                    <p>KES. {{item.price * item.quantity}}</p>
+                    <p>KES. {{formatPrice(item.price * item.quantity)}}</p>
                     <div class="wrapper">
-                    <button class="btn btn--minus" @click="decrease(productId)" type="button" name="button">
+         <!--            <button class="btn btn--minus" @click="decrease(productId)" type="button" name="button">
                     -
-                    </button>
-                    <input class="quantity" type="text" name="name" :value="item.quantity">
-                    <button class="btn btn--plus" @click="increase(productId)" type="button" name="button">
+                    </button> -->
+                    <input class="quantity custom-input" type="number" v-model.number="item.quantity" @input="updateCartItem(productId, item.quantity)">
+           <!--          <button class="btn btn--plus" @click="increase(productId)" type="button" name="button">
                       +
-                    </button>
+                    </button> -->
                   </div>
                   <button class="mt-2" @click="removeCartItem(productId)">Remove from Cart</button>
 
@@ -83,7 +83,7 @@
                 <hr class="dropdown-divider">
               </li>              
               <li v-if="cart.length !== 0" class="dropdown-header">
-               Total: <strong>KSH. {{calculateTotal()}}</strong>
+               Total: <strong>KSH. {{formatPrice(calculateTotal())}}</strong>
                 <a href="#" @click="goToCheckout()"><span class="badge rounded-pill bg-primary p-2 ms-2">Checkout</span></a>
               </li>              
   
@@ -214,6 +214,7 @@
   <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import numeral from 'numeral';
 
 
 const toast = Swal.mixin({
@@ -244,6 +245,9 @@ window.toast = toast;
           document.body.classList.add("toggle-sidebar");
         }
       },
+      formatPrice(value) {
+          return numeral(value).format('0,0');
+       },
       goToCheckout()
       {
         this.$router.push('/checkout')
@@ -252,13 +256,19 @@ window.toast = toast;
       {
         this.$router.push('/cart')
       },      
-      increase(id) {
-        this.cart[id].quantity++;
+      increase(index) {
+          if (this.cart[index]) {
+              this.cart[index].quantity++;
+          }
+          this.updateCartItem(index, this.cart[index].quantity);
+          this.fetchCart();
       },
-      decrease(id) {
-        if (this.cart[id].quantity > 0) {
-          this.cart[id].quantity--;
-        }
+      decrease(index) {
+          if (this.cart[index] && this.cart[index].quantity > 0) {
+              this.cart[index].quantity--;
+          }
+          this.updateCartItem(index, this.cart[index].quantity);
+          this.fetchCart();
       }, 
       calculateTotal() {
         let total = 0;
@@ -270,6 +280,21 @@ window.toast = toast;
 
         return total;
       }, 
+      updateCartItem(productId, newQuantity) {
+        // Make an API request to update the quantity of the product in the cart
+        axios.post('/api/update-cart', {
+            product_id: productId,
+            quantity: newQuantity,
+        })
+        .then(response => {
+            console.log(response.data.message);
+            // Fetch the updated cart data after the update
+            this.fetchCart();
+        })
+        .catch(error => {
+            console.error('Error updating cart:', error);
+        });
+      },
       removeCartItem(productId) {
         // Make an API request to remove the product from the cart
         axios.post('/api/remove-from-cart', {
