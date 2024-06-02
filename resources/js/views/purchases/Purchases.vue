@@ -14,36 +14,36 @@
                 <thead>
                     <tr>
                     <!-- <th scope="col">No</th> -->
-                    <th scope="col">Preview</th>
+                    <!-- <th scope="col">Preview</th> -->
                     <th scope="col">Name</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Size</th>
+             <!--        <th scope="col">Category</th>
+                    <th scope="col">Size</th> -->
                     <th scope="col">Pieces</th>
                     <th scope="col">S.Price(KES)</th>                
-                    <th scope="col">Supplier</th>
+                    <!-- <th scope="col">Supplier</th> -->
                     <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr  v-for="product in products" :key="product.id" >
                     <!-- <th scope="col">{{visit.id}}</th> -->
-                    <th scope="row"><a href="#">
+   <!--                  <th scope="row"><a href="#">
                         <img :src="getPhoto() + product.image" />
-                    </a></th>
+                    </a></th> -->
                     <td scope="col">{{product.name}}</td>
-                    <td scope="col">{{product.category['name']}}</td>
-                    <td scope="col">{{product.size}}</td>
+              <!--       <td scope="col">{{product.category['name']}}</td>
+                    <td scope="col">{{product.size}}</td> -->
                     <td scope="col">{{product.pieces}}</td>
-                    <td scope="col">{{product.selling_price}}</td>
-                    <td scope="col">{{product.supplier['name']}}</td>                
+                    <td scope="col">{{formatPrice(product.selling_price)}}</td>
+                    <!-- <td scope="col">{{product.supplier['name']}}</td>                 -->
      <!--                <td>
                         <button @click="checkoutProduct(product.id)" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#basicModal28">
                             Checkout</button>
                     </td> -->
                     <td>
                         <button type="submit" v-on:click="addToCart(product)" class="btn btn-primary">
-    <i class="fas fa-cart-plus"></i>
-</button>
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
 
                     </td>                                        
                     </tr>
@@ -90,8 +90,8 @@
                     <!-- <th scope="col">{{visit.id}}</th> -->
                     <td scope="col">{{invoice.ref_no}}</td>
                     <td scope="col">{{invoice.items_no}}</td>
-                    <td scope="col">{{invoice.amount_due}}</td>
-                    <td scope="col">{{invoice.amount_paid}}</td>
+                    <td scope="col">{{formatPrice(invoice.amount_due)}}</td>
+                    <td scope="col">{{formatPrice(invoice.amount_paid)}}</td>
                     <!-- <td scope="col">{{invoice.change}}</td> -->
                     <td>
                       <span v-if="invoice.status == 1" class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Cleared</span>
@@ -119,6 +119,8 @@ import $ from "jquery";
   
 import axios from 'axios';
 import moment  from 'moment';
+import numeral from 'numeral';
+
 export default({
     data(){
         return {
@@ -143,6 +145,9 @@ export default({
           if(value){
             return moment(String(value)).format('MMM Do YYYY')
           }
+        },
+        formatPrice(value) {
+          return numeral(value).format('0,0.00');
         },
         getPhoto()
         {

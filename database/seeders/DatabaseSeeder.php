@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(SupplierTableSeeder::class);
         $this->call(TaxTotSeeder::class);
         $this->call(AboutInfoSeeder::class);
+        $this->call(ResetPasswordSeeder::class);
     }
 }

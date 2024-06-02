@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\TaxTotController;
 use App\Http\Controllers\Api\AboutInfoController;
+use App\Http\Controllers\Api\ResetPasswordController;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){
     Route::get('/user', function( Request $request ){
@@ -83,3 +84,13 @@ Route::get('taxtot/{id}', [TaxTotController::class, 'single']);
 
 Route::put('aboutinfo/{id}', [AboutInfoController::class, 'update']);
 Route::get('aboutinfo/{id}', [AboutInfoController::class, 'single']);
+
+//admin resets password
+Route::put('resetpassword/{id}',[ProfileController::class, 'resetPassword']);
+
+Route::put('activateuser/{id}',[UserController::class,'activate']);
+Route::put('deactivateuser/{id}',[UserController::class,'deactivate']);
+
+//admin changes the password sent when password is reset
+Route::put('passwordreset/{id}',[ResetPasswordController::class, 'update']);
+Route::get('passwordreset/{id}',[ResetPasswordController::class, 'single']);

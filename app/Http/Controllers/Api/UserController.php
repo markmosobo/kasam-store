@@ -85,4 +85,24 @@ class UserController extends Controller
 
         return response(null, 204);
     }
+
+        public function activate(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        if($user){
+            $user->update(array('status' => 1));
+            $user->save();
+        }
+    }
+
+    public function deactivate(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        if($user){
+            $user->update(array('status' => 2));
+            $user->save();
+        }
+    }
 }

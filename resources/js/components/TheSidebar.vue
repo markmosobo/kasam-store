@@ -93,20 +93,39 @@
       </li><!-- End Dashboard Nav -->
 
       <li v-show="user.role == 'admin'" class="nav-item">
-        <router-link to="/users" custom v-slot="{ href, navigate, isActive }">
-                  <a
-                    :href="href"
-                    :class="{ active: isActive }"
-                    class="nav-link"
-                    @click="navigate"
-                  >
-          <i class="bi bi-people"></i>
-          <span>Users</span>
+        <a class="nav-link collapsed" data-bs-target="#users-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-people"></i><span>Manage Users</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        </router-link>
-      </li><!-- End Dashboard Nav -->
+        <ul id="users-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <router-link to="/users" custom v-slot="{ href, navigate, isActive }">
+                <a
+                  :href="href"
+                  :class="{ active: isActive }"
+                  class="nav-link"
+                  @click="navigate"
+                >
+              <i class="bi bi-circle"></i><span>All Users</span>
+              </a>
+            </router-link>
+          </li> 
+          <li>
+            <router-link to="/resetpassword" custom v-slot="{ href, navigate, isActive }">
+                <a
+                  :href="href"
+                  :class="{ active: isActive }"
+                  class="nav-link"
+                  @click="navigate"
+                >
+              <i class="bi bi-circle"></i><span>Reset Password</span>
+              </a>
+            </router-link>
+          </li>                     
+        </ul>
+      </li> 
+      <!-- End Dashboard Nav -->
 
-      <li class="nav-item">
+      <li v-show="user.role == 'admin' || user.role == 'storekeeper'" class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-menu-button-wide"></i><span>Manage KRA</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>

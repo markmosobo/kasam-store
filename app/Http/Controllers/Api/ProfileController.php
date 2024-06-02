@@ -33,4 +33,28 @@ class ProfileController extends Controller
             'message' => 'Password changed successfully'
         ]);
     }
+
+    public function resetPassword(Request $request, $id)
+    {
+        // Find the user by ID
+        $user = User::find($id);
+
+        // Check if the user exists
+        if (!$user) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'User not found',
+            ], 404);
+        }
+
+        // Update the user's password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Return a success response
+        return response()->json([
+            'status' => 200,
+            'message' => 'Password reset successfully',
+        ]);
+    }
 }

@@ -21,10 +21,10 @@
                   </div>
   
                   <div class="card-body pb-0">
-                    <h5 class="card-title">All Categories <span>| Today</span></h5>
+                    <h5 class="card-title">Default Reset Password <span>| Default password</span></h5>
                     <p class="card-text">
                  
-                    <router-link to="/add-category" custom v-slot="{ href, navigate, isActive }">
+<!--                     <router-link to="/add-category" custom v-slot="{ href, navigate, isActive }">
                         <a
                           :href="href"
                           :class="{ active: isActive }"
@@ -33,7 +33,7 @@
                         >
                           Add Category
                         </a>
-                    </router-link>
+                    </router-link> -->
           
                     </p>
 
@@ -41,21 +41,21 @@
                       <thead>
                         <tr>
                           <th scope="col">Name</th>
-                          <th scope="col">Created On</th>
+                          <th scope="col">Updated On</th>
                           <th scope="col">Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="category in categories" :key="category.id">
-                          <td>{{category.name}}</td>
-                          <td>{{format_date(category.created_at) }}</td>
+                        <tr v-for="pass in resetpassword" :key="pass.id">
+                          <td>{{pass.name}}</td>
+                          <td>{{format_date(pass.updated_at) }}</td>
                           <td>
                             <div class="btn-group" role="group">
                                 <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Action
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
-                                  <a @click="navigateTo('/editcategory/'+category.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Edit</a>
+                                  <a @click="navigateTo('/edit-resetpassword/'+pass.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Edit</a>
                                   <!-- <a @click="deleteCategory(category.id)" class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>Delete</a>    -->
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
   export default {
     data(){
       return {
-        categories: [],
+        resetpassword: [],
       }
     },
     methods: {
@@ -141,8 +141,8 @@
               })
       },
       loadLists() {
-         axios.get('api/categories').then((response) => {
-         this.categories = response.data.data;
+         axios.get('api/lists').then((response) => {
+         this.resetpassword = response.data.lists.resetpassword;
          setTimeout(() => {
               $("#AllCategoriesTable").DataTable();
           }, 10);

@@ -44,6 +44,7 @@
                             <th scope="col">Email</th>
                             <th scope="col">Role</th>
                             <th scope="col">Created On</th>
+                            <th scope="col">Status</th>
                             <th scope="col">Action</th>
                           </tr>
                         </thead>
@@ -55,6 +56,12 @@
                             <td>{{user.role}}</td>
                             <td>{{format_date(user.created_at)}}</td>
                             <td>
+                              <span v-if="user.status == 0" class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i> Pending</span>   
+                              <span v-else-if="user.status == 1" class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Active</span>
+                              <span v-else class="badge bg-light text-dark"><i class="bi bi-star me-1"></i> Inactive</span>
+
+                            </td>                            
+                            <td>
                               <div class="btn-group" role="group">
                                   <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                   Action
@@ -63,8 +70,9 @@
                                     <a @click="navigateTo('/viewuser/'+user.id )" class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>View Profile</a>
                                     <a @click="navigateTo('/viewuseractivity/'+user.id )" class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>View Activity</a>
                                     <a @click="navigateTo('/edituser/'+user.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Edit</a>
-                                    <a v-if="user.status == 2" @click="navigateTo('/edituser/'+user.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Reactivate</a>
-                                    <a v-if="user.status == 1" @click="navigateTo('/edituser/'+user.id )" class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Deactivate</a>
+                                    <a @click="resetPassword(user.id )" class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>Reset Password</a>                                     
+                                    <a v-if="user.status == 2" @click="activateUser(user.id)" class="dropdown-item" href="#"><i class="ri-eye-close-fill mr-2"></i>Activate</a>
+                                    <a v-if="user.status == 1" @click="deactivateUser(user.id)" class="dropdown-item" href="#"><i class="ri-refresh-fill mr-2"></i>Deactivate</a>
 
                                   </div>
                               </div>
@@ -106,16 +114,56 @@
       data(){
         return {
             users: [],
+            resetpassword: [],
         }
       },
       methods: {
         format_date(value){
         if(value){
-          return moment(String(value)).format('MMM Do YYYY')
+            return moment(String(value)).format('DD/MM/YYYY')
         }
        },
         navigateTo(location){
             this.$router.push(location)
+        },
+        resetPassword(id){
+          const payload = {
+            password: this.password // Capture the new password
+          };
+          axios.put('api/resetpassword/'+ id, payload).then(() => {
+            toast.fire(
+              'Successful',
+              'Password has been reset',
+              'success'
+            ); 
+            this.loadLists();                    
+          }).catch(() => {
+              console.log('error')
+          })
+        },
+        activateUser(id){
+          axios.put('api/activateuser/'+ id).then(() => {
+            toast.fire(
+              'Successful',
+              'User has been activated',
+              'success'
+            ); 
+            this.loadLists();                    
+          }).catch(() => {
+              console.log('error')
+          })
+        },
+        deactivateUser(id){
+          axios.put('api/deactivateuser/'+ id).then(() => {
+            toast.fire(
+              'Successful',
+              'User has been deactivated',
+              'success'
+            ); 
+            this.loadLists();                    
+          }).catch(() => {
+              console.log('error')
+          })
         },
         deleteUser(id){
                 Swal.fire({
@@ -150,11 +198,14 @@
                 })
         },
         loadLists() {
-             axios.get('api/users').then((response) => {
-             this.users = response.data.data;
+             axios.get('api/lists').then((response) => {
+             this.users = response.data.lists.users;
+             this.resetpassword = response.data.lists.resetpassword[0];
+             this.password = this.resetpassword.name;
+             console.log(this.password)
              setTimeout(() => {
-                            $("#AllUsersTable").DataTable();
-                        }, 10);
+                  $("#AllUsersTable").DataTable();
+              }, 10);
     
              });
           },

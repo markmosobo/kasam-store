@@ -37,7 +37,7 @@
                 <table id="allProductsTable" class="table table-borderless datatable">
                 <thead>
                     <tr>
-                    <th scope="col">Preview</th>
+                    <!-- <th scope="col">Preview</th> -->
                     <th scope="col">Name</th>
                     <!-- <th scope="col">Size</th> -->
                     <th scope="col">Pieces</th>
@@ -51,14 +51,14 @@
                 <tbody>
                     <tr  v-for="product in products" :key="product.id" >
                     <!-- <th scope="col">{{visit.id}}</th> -->
-                    <th scope="row"><a href="#">
+           <!--          <th scope="row"><a href="#">
                         <img :src="getPhoto() + product.image" />
-                    </a></th>
+                    </a></th> -->
                     <td scope="col">{{product.name}}</td>
                     <!-- <td scope="col">{{product.size}}</td> -->
                     <td scope="col">{{product.pieces}}</td>
-                    <td scope="col">{{product.buying_price}}</td>
-                    <td scope="col">{{product.selling_price}}</td>
+                    <td scope="col">{{formatPrice(product.buying_price)}}</td>
+                    <td scope="col">{{formatPrice(product.selling_price)}}</td>
                     <td v-show="user.role == 'admin'" scope="col">{{product.user['first_name']}} {{product.user['last_name']}}</td>                
                     <td scope="col">{{format_date(product.created_at)}}</td>
                     <td>
@@ -104,7 +104,7 @@
                 <thead>
                     <tr>
                     <!-- <th scope="col">No</th> -->
-                    <th scope="col">Preview</th>
+                    <!-- <th scope="col">Preview</th> -->
                     <th scope="col">Name</th>
                     <th scope="col">Pieces</th>
                     <th scope="col">Price(KES)</th> 
@@ -116,15 +116,15 @@
                 <tbody>
                     <tr  v-for="product in restocked" :key="product.id" >
                     <!-- <th scope="col">{{visit.id}}</th> -->
-                    <th scope="row"><a href="#">
+   <!--                  <th scope="row"><a href="#">
                         <img :src="getPhoto() + product.product['image']" />
-                    </a></th>
+                    </a></th> -->
                     <td scope="col">{{product.product['name']}}</td>
                     <td scope="col">{{product.pieces}}</td>
-                    <td scope="col">{{product.buying_price}}</td>
+                    <td scope="col">{{formatPrice(product.buying_price)}}</td>
                     <td scope="col">{{product.supplier['name']}}</td>
                     <td v-show="user.role == 'admin'" scope="col">{{product.user['first_name']}} {{product.user['last_name']}}</td>                
-                    <td scope="col">{{format_date(product.created_at)}}</td>
+                    <td scope="col">{{formatDateTime(product.created_at)}}</td>
                     </tr>
                 </tbody>
                 </table>
@@ -148,7 +148,7 @@ import moment from 'moment';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
-
+import numeral from 'numeral';
 
 const toast = Swal.mixin({
     toast: true,
@@ -158,6 +158,7 @@ const toast = Swal.mixin({
 });
 
 window.toast = toast;
+
 export default({
     data(){
         return {
@@ -175,8 +176,14 @@ export default({
         },
         format_date(value){
           if(value){
-            return moment(String(value)).format('MMM Do YYYY')
+            return moment(String(value)).format('DD/MM/YYYY')
           }
+        },
+        formatDateTime(value) {
+            return moment(value).format('h:mm A');
+        },
+        formatPrice(value) {
+          return numeral(value).format('0,0.00');
         },
         getPhoto()
         {

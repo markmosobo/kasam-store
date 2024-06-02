@@ -15,6 +15,7 @@ use App\Models\Invoice;
 use App\Models\Cart;
 use App\Models\TaxTot;
 use App\Models\AboutInfo;
+use App\Models\ResetPassword;
 use Carbon\Carbon;
 
 class ListController extends Controller
@@ -115,6 +116,7 @@ class ListController extends Controller
         $users = User::all();
         $taxtot = TaxTot::first()->get();
         $aboutinfo = AboutInfo::first()->get();
+        $resetpassword = ResetPassword::first()->get();
         return response()->json([
             "lists" => [
                 "products" => $products,
@@ -172,7 +174,8 @@ class ListController extends Controller
                 "allactivities" =>$allactivities,
 
                 "taxtot" =>$taxtot,
-                "aboutinfo" =>$aboutinfo
+                "aboutinfo" =>$aboutinfo,
+                "resetpassword" =>$resetpassword
             ]
         ]);
     }

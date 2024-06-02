@@ -20,7 +20,7 @@
                 <thead>
                     <tr>
                     <!-- <th scope="col">No</th> -->
-                    <th scope="col">Preview</th>
+                    <!-- <th scope="col">Preview</th> -->
                     <th scope="col">Name</th>
                     <th scope="col">Pieces</th>
                     <th scope="col">B.Price(KES)</th> 
@@ -32,12 +32,12 @@
                 <tbody>
                     <tr  v-for="product in restocked" :key="product.id" >
                     <!-- <th scope="col">{{visit.id}}</th> -->
-                    <th scope="row"><a href="#">
+          <!--           <th scope="row"><a href="#">
                         <img :src="getPhoto() + product.product['image']" />
-                    </a></th>
+                    </a></th> -->
                     <td scope="col">{{product.product['name']}}</td>
                     <td scope="col">{{product.pieces}}</td>
-                    <td scope="col">{{product.buying_price}}</td>
+                    <td scope="col">{{formatPrice(product.buying_price)}}</td>
                     <td scope="col">{{product.supplier['name']}}</td>
                     <td scope="col">{{product.user['first_name']}} {{product.user['last_name']}}</td>                
                     <td scope="col">{{format_date(product.created_at)}}</td>
@@ -63,7 +63,7 @@ import moment from 'moment';
   
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
+import numeral from 'numeral';
 
 const toast = Swal.mixin({
     toast: true,
@@ -89,8 +89,11 @@ export default({
         },
         format_date(value){
           if(value){
-            return moment(String(value)).format('MMM Do YYYY')
+            return moment(String(value)).format('DD/MM/YYYY')
           }
+        },
+        formatPrice(value) {
+          return numeral(value).format('0,0.00');
         },
         getPhoto()
         {

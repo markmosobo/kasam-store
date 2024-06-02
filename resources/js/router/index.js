@@ -132,6 +132,9 @@ import EditTaxTot from '../views/payment/EditTaxTot.vue'
 import AboutInfo from '../views/payment/AboutInfo.vue'
 import EditAboutInfo from '../views/payment/EditAboutInfo.vue'
 
+import ResetPassword from '../views/users/ResetPassword.vue'
+import EditResetPassword from '../views/users/EditResetPassword.vue'
+
 function guardMyroute(to, from, next)
 {
  var isAuthenticated= false;
@@ -899,7 +902,19 @@ const routes = [
         name: 'edit-aboutinfo',
         component: EditAboutInfo,
         beforeEnter : guardMyroute,
-    },       
+    }, 
+    {
+        path:'/resetpassword',
+        name: 'resetpassword',
+        component: ResetPassword,
+        beforeEnter : guardMyroute,
+    },
+    {
+        path:'/edit-resetpassword/:id',
+        name: 'edit-resetpassword',
+        component: EditResetPassword,
+        beforeEnter : guardMyroute,
+    },      
 ];
 
 const router = createRouter({
