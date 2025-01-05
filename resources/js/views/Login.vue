@@ -47,7 +47,7 @@
                             required
                           />
                           <div class="invalid-feedback">
-                            Please enter your email.
+                            Please enter your email address.
                           </div>
                       </div>
   
